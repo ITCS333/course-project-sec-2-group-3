@@ -96,7 +96,8 @@ function renderAssignmentDetails(assignment) {
   assignmentDescription.textContent=assignment.description;
 
   assignmentFilesList.innerHTML='';
-  assignment.files.forEach(url =>{
+  const files = assignment.files ?? [];
+  files.forEach(url =>{
     const li=document.createElement('li');
     const a =document.createElement('a');
     a.href=url;
