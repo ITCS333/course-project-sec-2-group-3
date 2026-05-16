@@ -93,15 +93,13 @@ function createAssignmentArticle(assignment) {
  */
 async function loadAssignments() {
   // ... your implementation here ...
-  fetch('./api/index.php')
-  .then(res=>res.json())
-  .then(result=>{
-    assignmentListSection.innerHTML='';
-    result.data.forEach(assignment=>{
-      const article=createAssignmentArticle(assignment);
-      assignmentListSection.appendChild(article);
-      })
-  })
+  const res    = await fetch('./api/index.php');
+  const result = await res.json();
+
+  assignmentListSection.innerHTML = '';
+  result.data.forEach(assignment => {
+    assignmentListSection.appendChild(createAssignmentArticle(assignment));
+  });
 }
 
 // --- Initial Page Load ---

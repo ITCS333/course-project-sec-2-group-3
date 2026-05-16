@@ -181,23 +181,22 @@ async function handleAddComment(event) {
   const commentText=newCommentInput.value.trim();
   if(commentText=='')return;
 
-  fetch('./api/index.php?action=comment',{
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+  const res = await fetch('./api/index.php?action=comment', {
+    method:'POST',
+    headers:{ 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      assignment_id:currentAssignmentId,
+      assignment_id: currentAssignmentId,
       author:'Student',
       text:commentText
     })
-  })
-  .then(res=>res.json())
-  .then(result=>{
-    if(result.success){
-      currentComments.push(result.data);
-      renderComments();
-      newCommentInput.value='';
-    }
   });
+  const result = await res.json();
+
+  if (result.success) {
+    currentComments.push(result.data);
+    renderComments();
+    newCommentInput.value = '';
+  }
 }
 
 /**
@@ -234,13 +233,10 @@ async function initializePage() {
     return;
   }
 
-  Promise.all([
-    fetch('/.api/index.php?id='+currentAssignmentId).then(res=>res.json()),
-    fetch('/.api/index.php?action=comments&assignment_id='+currentAssignmentId).then(res=>res.json()),
-  ])
-  .then(results=>{
-    const assignmentResult=results[0];
-    const commentsResult=results[1];
+  const [assignmentResult, commentsResult] = await Promise.all([
+    fetch('./api/index.php?id=' + currentAssignmentId).then(res => res.json()),
+    fetch('./api/index.php?action=comments&assignment_id=' + currentAssignmentId).then(res => res.json()),
+  ]);
 
     currentComments=commentsResult.data || [];
 
@@ -252,8 +248,7 @@ async function initializePage() {
     else{
       assignmentTitle.textContent='Assignment not found.'
     }
-  })
-}
+  }
 
 // --- Initial Page Load ---
 initializePage();

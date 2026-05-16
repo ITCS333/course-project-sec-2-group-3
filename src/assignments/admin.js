@@ -142,31 +142,30 @@ function renderTable() {
 async function handleAddAssignment(event) {
   // ... your implementation here ...
   event.preventDefault();
-  const title=document.getElementById('assignment-title').value;
-  const due_date=document.getElementById('assignment-due-date').value;
-  const description=document.getElementById('assignment-description').value;
-  const files=document.getElementById('assignment-files').value.split('\n').filter(f=> f.trim()!=='');
+  const title= document.getElementById('assignment-title').value;
+  const due_date= document.getElementById('assignment-due-date').value;
+  const description= document.getElementById('assignment-description').value;
+  const files= document.getElementById('assignment-files').value.split('\n').filter(f => f.trim() !== '');
 
-  const submitButton=document.getElementById('add-assignment')
-  const editId=submitButton.dataset.editId;
+  const submitButton= document.getElementById('add-assignment');
+  const editId = submitButton.dataset.editId;
 
-  if(editId){
-    handleUpdateAssignment(Number(editId),{title,due_date,description,files}
-  );}
-  else{
-      fetch('./api/index.php',{
-        method: 'POST',
-        headers: {'Content-type':'application/json'},
-        body: JSON.stringify({title,due_date,description,files})
-      })
-      .then(res=> res.json())
-      .then(result=>{
-        if(result.success){
-          assignments.push({id:result.id,title,due_date,description,files});
-          renderTable();
-          assignmentForm.reset();
-        }
-      });
+  if (editId) {
+    handleUpdateAssignment(Number(editId), { title, due_date, description, files });
+    return;
+  }
+
+  const res = await fetch('./api/index.php', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ title, due_date, description, files }),
+  });
+  const result = await res.json();
+
+  if (result.success) {
+    assignments.push({ id: result.id, title, due_date, description, files });
+    renderTable();
+    assignmentForm.reset();
   }
 }
 
@@ -191,27 +190,24 @@ async function handleUpdateAssignment(id, fields) {
   // ... your implementation here ...
   const{title,due_date,description,files}=fields;
 
-  fetch('./api/index.php',{
-    method: 'PUT',
-    headers:{'Content-Type': 'application/json'},
-    body:JSON.stringify({id,title,due_date,description,files})
-  })
-  .then(res=>res.json())
-  .then(result=>{
-    if(result.success){
-      const assignmentIndex=assignments.findIndex(a=> a.id===id);
-      if(assignmentIndex!==-1){
-        assignments[assignmentIndex]={id,title,due_date,description,files};
-      }
+  const res = await fetch('./api/index.php', {
+    method:'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body:JSON.stringify({ id, title, due_date, description, files }),
+  });
+  const result = await res.json();
+
+  if (result.success) {
+    const index = assignments.findIndex(a => a.id === id);
+    if (index !== -1) {
+      assignments[index] = { id, title, due_date, description, files };
+    }
       renderTable();
       assignmentForm.reset();
       const submitButton=document.getElementById('add-assignment');
       submitButton.textContent='Add Assignment';
       delete submitButton.dataset.editId;
-    }
-  })
-  
-
+    }  
 }
 
 /**
@@ -242,15 +238,13 @@ async function handleTableClick(event) {
   const target=event.target;
   if(target.classList.contains('delete-btn')){
     const id=Number(target.dataset.id);
+    const res    = await fetch('./api/index.php?id=' + id, { method: 'DELETE' });
+    const result = await res.json();
 
-    fetch('./api/index.php?id=' +id, {method:'DELETE'})
-    .then(res=>res.json())
-    .then(result=>{
-      if(result.success){
-        assignments=assignments.filter(a=>a.id !==id);
-        renderTable();
+    if(result.success){
+       assignments=assignments.filter(a=>a.id !==id);
+      renderTable();
       }
-    });
   }
 
 
@@ -285,19 +279,16 @@ async function handleTableClick(event) {
  */
 async function loadAndInitialize() {
   // ... your implementation here ...
-  fetch('./api/index.php')
-  .then(res => res.json())
-  .then(result=>{
-    if(result.success){
-      assignments=result.data;
-      renderTable();
-    }
-  });
+  const res    = await fetch('./api/index.php');
+  const result = await res.json();
+  if (result.success) {
+    assignments = result.data;
+    renderTable();
+  }
   assignmentForm.addEventListener('submit', handleAddAssignment);
   assignmentsTbody.addEventListener('click', handleTableClick);
-
-
 }
+
 
 // --- Initial Page Load ---
 loadAndInitialize();
