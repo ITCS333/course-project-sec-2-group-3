@@ -19,15 +19,15 @@ let users = [];
 // the HTML document is parsed before this script runs.
 
 // TODO: Select the user table body element with id="user-table-body".
-
+const userTableBody = document.getElementById("user-table-body");
 // TODO: Select the "Add User" form with id="add-user-form".
-
+const addUserForm = document.getElementById("add-user-form");
 // TODO: Select the "Change Password" form with id="password-form".
-
+const changPasswordForm = document.getElementById("password-form");
 // TODO: Select the search input field with id="search-input".
-
+const searchInput = document.getElementById("search-input");
 // TODO: Select all table header (th) elements inside the thead of id="user-table".
-
+const tableHeaders = document.querySelectorAll("#user-table thead th");
 // --- Functions ---
 
 /**
@@ -43,6 +43,38 @@ let users = [];
  */
 function createUserRow(user) {
   // ... your implementation here ...
+const tr = document.creatElemnt("tr");
+
+const nameTd = document.creatElemnt("td");
+nameTd.textContent = user.name;
+
+const emailTd = document.creatElemnt("td");
+emailTd.textContent = user.email;
+
+const adminTd = document.creatElemnt("td");
+adminTd.textContent =user.is_admin == 1 ? "Yes" : "No";
+
+const actionTd = document.creatElemnt("td");
+
+const editBtn = document.creatElemnt("button");
+editBtn.textContent = "Edit";
+editBtn.classList.add("edit-btn");
+editBtn.dataset.id = user.id;
+
+const deleteBtn = document.cearElemnt("button");
+deleteBtn.textContent = "Delete";
+deleteBtn.classList.add("delete-btn");
+deleteBtn.dataset.id = user.id;
+
+actionTd.appendChild(editBtn);
+actionTd.appendChild(deleteBtn);
+
+tr.appendChild(nameTd);
+tr.appendChild(emailTd);
+tr.appendChild(adminTd);
+tr.appendChild(actionTd);
+return tr;
+
 }
 
 /**
@@ -55,6 +87,14 @@ function createUserRow(user) {
  */
 function renderTable(userArray) {
   // ... your implementation here ...
+
+userTableBody.innerHTML = ""
+userArray.forEach(user => {
+  const row = createUserRow(user);
+  userTableBody.appendChild(row);
+
+
+});
 }
 
 /**
@@ -74,6 +114,35 @@ function renderTable(userArray) {
  */
 function handleChangePassword(event) {
   // ... your implementation here ...
+event.preventDefault();
+const current_password = document.getElement("current-password").value;
+const new_password = document.getElemnt("new-password").value;
+const confirm_password = document.getElemnt("confirm_password").value;
+
+if (new_password !== confirm_password){
+alert("Passwords do not match.");
+return;
+} 
+if(new_password.length < 8) {
+  alert("Password must be at least 8 characters.");
+  return;
+}
+const id = 1; 
+ fetch("../api/index.php?action=change_password ",{
+  method: "POST",
+  headers: { "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ id,  current_password, new_password })
+ })
+.then(response => response.json())
+.then(data => {
+  alert("Password update successfully!");
+  changePasswordForm.reset();
+})
+.catch(error => {
+  alert(error.message);
+});
+  
 }
 
 /**
@@ -94,6 +163,36 @@ function handleChangePassword(event) {
  */
 function handleAddUser(event) {
   // ... your implementation here ...
+  event.preventDefault();
+
+  const name = doucoment.getElementById("user-name").value;
+const email = doucoment.getElementById("user-email").value;
+const password = doucoment.getElemntById("default-password").value;
+const is_admin = doucoment.getElemntById("is-admin").checked ? 1 : 0;
+
+if (!name || !email || !password){
+  alert("Please fill out all required fields.");
+  return;
+}
+if (password.length < 8){
+  alert("Password must be at least 8 characters.");
+  return;
+}
+fetch("../api/index.php",{
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ name, email, password, is_admin})
+})
+.then(response => response.json())
+.then(data => {
+  loadUsersAndInitialize();
+  addUserForm.reset();
+})
+.catch(error => {
+  alert(error.message);
+});
 }
 
 /**
@@ -113,7 +212,25 @@ function handleAddUser(event) {
  */
 function handleTableClick(event) {
   // ... your implementation here ...
+const target = event.target;
+
+if (target.classList.contains("delete-btn")){
+  const id = target.dataset.id;
+  fetch(`../api/index.php?id=${id}` , {
+    method: "Delete"
+  })
+  .then(response => response.json())
+  .then(data => {
+    users = user.filter(users => user.id !=id);
+
+    renderTable(users);
+  })
+  .catch(error => {
+    alert(error.massage);
+  });
 }
+}
+
 
 /**
  * TODO: Implement the handleSearch function.
@@ -128,6 +245,16 @@ function handleTableClick(event) {
  */
 function handleSearch(event) {
   // ... your implementation here ...
+const term = searchInput.value.toLowerCase();
+
+if (!term){
+  renderTable(users);
+  return;
+}
+const filterd = users.filter(user =>
+  user.name.toLowerCase().includes(term)
+);
+renderTable(filtered);
 }
 
 /**
@@ -149,6 +276,22 @@ function handleSearch(event) {
  */
 function handleSort(event) {
   // ... your implementation here ...
+const index = event.currentTarget.cellIndex;
+  const map = ["name", "email", "is_admin"];
+const key = map[index];
+
+let dir = this.dataset.sortDir === "asc" ? "desc" : "asc";
+this.dataset.sortDir = dir;
+users.sort((a, b) => {
+if (key == "is_admin") {
+  return dir == "asc" ? a[key] - b[key] : b[key] - a[key];
+} else {
+  return dir ===  "asc"
+  ? a[key].localeCompare(b[key])
+  : b[key].localeCompare(a[key])
+}
+});
+renderTable(users);
 }
 
 /**
@@ -170,6 +313,24 @@ function handleSort(event) {
  */
 async function loadUsersAndInitialize() {
   // ... your implementation here ...
+const response = await fetch("../api/index.php");
+
+if (!response.ok) {
+  alert("Error loading users");
+  return;
+}
+const result = await response.json();
+users = result.data;
+renderTable(users);
+
+changePasswordForm.addEventListener("submit", handleChangePassword);
+addUserForm.addEvenListener("submit", handleAddUser);
+searchInput.addEvenListener("input", handleSearch);
+
+tableHeadrs.forEach(th => {
+  th.addEventListener("click", handleSort);
+});
+
 }
 
 // --- Initial Page Load ---
