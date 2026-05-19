@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Authentication Handler for Login Form
  * 
@@ -116,8 +117,8 @@ try {
     // TODO: Prepare the SQL statement using the PDO prepare method
     // Store the result in a variable
     // Prepared statements protect against SQL injection
-   require __DIR__ . '/db.php';
-$db = getDBConnection();
+require __DIR__ . '/db.php';
+    $db = getDBConnection();
     $stmt = $db->prepare($sql);
     // --- Execute the Query ---
     // TODO: Execute the prepared statement with the email parameter
@@ -218,10 +219,11 @@ if ($user && password_verify($password, $user["password"])) {
     // TODO: Return a generic error message to the client
     // DON'T expose database details to the user for security reasons
     // Return a JSON response with success false and a generic message
-  echo json_encode([
-        'success' => false,
-        'message' => 'Server error. Please try again later.'
-    ]);
+echo json_encode([
+    'success' => false,
+    'message' => 'Server error',
+    'error' => $e->getMessage()
+]);
 
     // TODO: Exit the script
  exit;
