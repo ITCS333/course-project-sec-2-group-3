@@ -111,7 +111,10 @@ try {
     // Use a WHERE clause to filter by email
     // IMPORTANT: Use a placeholder (? or :email) for the email value
     // This prevents SQL injection attacks
- $sql = "SELECT id, name, email, password FROM users WHERE email = :email LIMIT 1";
+$sql = "SELECT id, name, email, password, is_admin 
+        FROM users 
+        WHERE email = :email 
+        LIMIT 1";
 
     // --- Prepare the Statement ---
     // TODO: Prepare the SQL statement using the PDO prepare method
@@ -221,8 +224,7 @@ if ($user && password_verify($password, $user["password"])) {
     // Return a JSON response with success false and a generic message
 echo json_encode([
     'success' => false,
-    'message' => 'Server error',
-    'error' => $e->getMessage()
+    'message' => 'Server error'
 ]);
 
     // TODO: Exit the script
