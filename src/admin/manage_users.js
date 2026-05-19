@@ -176,33 +176,41 @@ function handleAddUser(event) {
   event.preventDefault();
 
   const name = document.getElementById("user-name").value;
-const email = document.getElementById("user-email").value;
-const password = document.getElementById("default-password").value;
-const is_admin = document.getElementById("is-admin").checked ? 1 : 0;
+  const email = document.getElementById("user-email").value;
+  const password = document.getElementById("default-password").value;
+  const is_admin = document.getElementById("is-admin").checked ? 1 : 0;
 
-if (!name || !email || !password){
-  alert("Please fill out all required fields.");
-  return;
-}
-if (password.length < 8){
-  alert("Password must be at least 8 characters.");
-  return;
-}
-fetch("../api/index.php",{
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ name, email, password, is_admin})
-})
-.then(response => response.json())
-.then(data => {
-  loadUsersAndInitialize();
-  addUserForm.reset();
-})
-.catch(error => {
-  alert(error.message);
-});
+  if (!name || !email || !password) {
+    alert("Please fill out all required fields.");
+    return;
+  }
+
+  if (password.length < 8) {
+    alert("Password must be at least 8 characters.");
+    return;
+  }
+
+  fetch("../api/index.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, email, password, is_admin })
+  })
+    .then(response => response.json().then(data => {
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to add user");
+      }
+
+      return data;
+    }))
+    .then(() => {
+      loadUsersAndInitialize();
+      addUserForm.reset();
+    })
+    .catch(error => {
+      alert(error.message);
+    });
 }
 
 /**
@@ -224,21 +232,28 @@ function handleTableClick(event) {
   // ... your implementation here ...
 const target = event.target;
 
-if (target.classList.contains("delete-btn")){
-  const id = target.dataset.id;
-  fetch(`../api/index.php?id=${id}` , {
-    method: "DELETE"
-  })
-  .then(response => response.json())
-  .then(data => {
-    users = users.filter(user => user.id !=id);
+  if (target.classList.contains("delete-btn")) {
+    const id = target.dataset.id;
 
-    renderTable(users);
-  })
-  .catch(error => {
-    alert(error.message);
-  });
-}
+    fetch(`../api/index.php?id=${id}`, {
+      method: "DELETE"
+    })
+      .then(response =>
+        response.json().then(data => {
+          if (!response.ok) {
+            throw new Error(data.message || "Delete failed");
+          }
+          return data;
+        })
+      )
+      .then(() => {
+        users = users.filter(user => user.id != id);
+        renderTable(users);
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+  }
 }
 
 
@@ -331,7 +346,14 @@ if (!response.ok) {
   return;
 }
 const result = await response.json();
-users = result.data;
+
+if (!response.ok || !result.success) {
+  alert("Failed to load users");
+  return;
+}
+
+users = result.data || [];
+renderTable(users);
 renderTable(users);
 
 changePasswordForm.addEventListener("submit", handleChangePassword);
