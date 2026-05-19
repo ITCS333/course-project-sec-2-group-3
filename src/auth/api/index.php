@@ -99,7 +99,8 @@ if (strlen($password) < 8) {
 // TODO: Get the database connection using the provided function
 // Assume getDBConnection() returns a PDO instance with error mode set to exception
 // The function is defined elsewhere (e.g., in a config file or db.php)
-
+require __DIR__ . '/db.php';
+    $db = getDBConnection();
 
 // TODO: Wrap database operations in a try-catch block to handle PDO exceptions
 // This ensures you can return a proper JSON error response if something goes wrong
@@ -120,8 +121,7 @@ $sql = "SELECT id, name, email, password, is_admin
     // TODO: Prepare the SQL statement using the PDO prepare method
     // Store the result in a variable
     // Prepared statements protect against SQL injection
-require __DIR__ . '/db.php';
-    $db = getDBConnection();
+
     $stmt = $db->prepare($sql);
     // --- Execute the Query ---
     // TODO: Execute the prepared statement with the email parameter

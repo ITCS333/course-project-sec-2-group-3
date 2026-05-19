@@ -105,7 +105,7 @@ function handleLogin(event) {
     displayMessage("Password must be at least 8 characters.", "error");
     return;
   }
-fetch("/src/auth/api/index.php",{
+fetch("src/auth/api/index.php",{
     method: "POST",
     headers: {
       "Content-Type": "application/json"
