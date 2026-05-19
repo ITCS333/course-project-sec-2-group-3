@@ -91,64 +91,50 @@ function isValidPassword(password) {
  */
 function handleLogin(event) {
   // ... your implementation here ...
-event.preventDefault();
-const email = emailInput.value.trim();
-const password = passwordInput.value.trim();
-if (!isValidEmail(email)) {
-        displayMessage("Invalid email format.", "error");
-        return; 
-    }
-if (!isValidPassword(password)) {
-        displayMessage("Password must be at least 8 characters.", "error");
-        return;
-    }
-try {
-    const response = await fetch("./api/index.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
-    });
+  event.preventDefault();
 
-    const data = await response.json();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  if (!isValidEmail(email)) {
+    displayMessage("Invalid email format.", "error");
+    return;
+  }
+
+  if (!isValidPassword(password)) {
+    displayMessage("Password must be at least 8 characters.", "error");
+    return;
+  }
+
+  fetch("./api/index.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
 
     if (data.success) {
       displayMessage("Login successful!", "success");
-     if (data.user.is_admin == 1) {
-    window.location.href = "/src/admin/manage_users.html";
-    } else {
-    window.location.href = "/index.html";
-  }
-  
+
+      if (data.user && data.user.is_admin == 1) {
+        window.location.href = "/src/admin/manage_users.html";
+      } else {
+        window.location.href = "/index.html";
+      }
 
     } else {
       displayMessage(data.message, "error");
     }
 
-  } catch (error) {
+  })
+  .catch(error => {
     console.error(error);
     displayMessage("Server error. Please try again.", "error");
+  });
 }
-}
-/**
- * TODO: Implement the setupLoginForm function.
- * This function will be called once to set up the form.
- * It should:
- * 1. Check if `loginForm` exists.
- * 2. If it exists, add a "submit" event listener to it.
- * 3. The event listener should call the `handleLogin` function.
- */
-function setupLoginForm() {
-  // ... your implementation here ...
- if (!loginForm) 
-    return;
-  loginForm.addEventListener("submit", handleLogin);
-}
-
-// --- Initial Page Load ---
-// Call the main setup function to attach the event listener.
-setupLoginForm();
