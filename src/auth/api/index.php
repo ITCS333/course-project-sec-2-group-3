@@ -101,9 +101,7 @@ try {
     // Use a WHERE clause to filter by email
     // IMPORTANT: Use a placeholder (? or :email) for the email value
     // This prevents SQL injection attacks
-  $sql = "SELECT id, name, email, password, is_admin 
-        FROM users 
-        WHERE email = :email";
+ 
 
     // --- Prepare the Statement ---
     // TODO: Prepare the SQL statement using the PDO prepare method
@@ -127,10 +125,10 @@ $stmt = $db->prepare("SELECT id, name, email, password, is_admin FROM users WHER
     // --- Verify User Exists and Password Matches ---
     // TODO: Check if a user was found
     // The fetch method returns false if no record matches
-  if (!$user) {
+  if (!$user || !password_verify($password, $user['password'])) {
     echo json_encode([
         'success' => false,
-        'message' => 'User not found']);
+        'message' => 'Invalid email or password']);
     exit;
     }
 
@@ -140,12 +138,7 @@ $stmt = $db->prepare("SELECT id, name, email, password, is_admin FROM users WHER
     //
     // NOTE: This assumes passwords are stored as hashes using password_hash() with PASSWORD_DEFAULT
     // (see database seed data). Never store passwords in plain text!
-   if (!password_verify($password, $user['password'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Does not match']);
-    exit;
-   }
+
 
     // --- Handle Successful Authentication ---
     // TODO: If password verification succeeds:
