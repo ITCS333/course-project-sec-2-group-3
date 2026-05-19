@@ -116,8 +116,8 @@ function handleChangePassword(event) {
   // ... your implementation here ...
 event.preventDefault();
 const current_password = document.getElementById("current-password").value;
-const new_password = document.getElemntById("new-password").value;
-const confirm_password = document.getElemntById("confirm_password").value;
+const new_password = document.getElementById("new-password").value;
+const confirm_password = document.getElementById("confirm-password").value;
 
 if (new_password !== confirm_password){
 alert("Passwords do not match.");
@@ -280,7 +280,7 @@ const index = event.currentTarget.cellIndex;
   const map = ["name", "email", "is_admin"];
 const key = map[index];
 
-let dir = event.currentTarget.dataset.sortDir
+let dir = event.currentTarget.dataset.sortDir === "asc" ? "desc" : "asc";
 event.currentTarget.dataset.sortDir = dir;
 users.sort((a, b) => {
 if (key == "is_admin") {
