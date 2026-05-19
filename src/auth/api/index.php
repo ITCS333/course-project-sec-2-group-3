@@ -184,28 +184,28 @@ try {
 
         // TODO: Exit the script to prevent further execution
         exit;
+    } else {
+        // --- Handle Failed Authentication ---
+        // TODO: If user doesn't exist OR password verification fails:
+        
+        // TODO: Prepare an error response array
+        // Include:
+        // - 'success' => false
+        // - 'message' => 'Invalid email or password'
+        //
+        // SECURITY NOTE: Don't specify whether email or password was wrong
+        // This prevents attackers from enumerating valid email addresses
+        $response = [
+            'success' => false,
+            'message' => 'Invalid email or password'
+        ];
+
+        // TODO: Encode the error response as JSON and echo it
+        echo json_encode($response);
+
+        // TODO: Exit the script
+        exit;
     }
-
-    // --- Handle Failed Authentication ---
-    // TODO: If user doesn't exist OR password verification fails:
-    
-    // TODO: Prepare an error response array
-    // Include:
-    // - 'success' => false
-    // - 'message' => 'Invalid email or password'
-    //
-    // SECURITY NOTE: Don't specify whether email or password was wrong
-    // This prevents attackers from enumerating valid email addresses
-    $response = [
-        'success' => false,
-        'message' => 'Invalid email or password'
-    ];
-
-    // TODO: Encode the error response as JSON and echo it
-    echo json_encode($response);
-
-    // TODO: Exit the script
-    exit;
 
 // TODO: Catch PDO exceptions in the catch block
 // Catch PDOException type
