@@ -121,7 +121,7 @@ fetch("src/auth/api/index.php",{
     if (data.success) {
       displayMessage("Login successful!", "success");
 
-      if (data.user && data.user.is_admin == 1) {
+      if (Number(data.user?.is_admin) === 1) {
         window.location.href = "/src/admin/manage_users.html";
       } else {
         window.location.href = "/index.html";
