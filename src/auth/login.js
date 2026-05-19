@@ -138,3 +138,4 @@ function handleLogin(event) {
     displayMessage("Server error. Please try again.", "error");
   });
 }
+loginForm.addEventListener('submit', handleLogin);
