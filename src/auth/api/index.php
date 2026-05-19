@@ -16,7 +16,7 @@ session_start();
 
 // --- Set Response Headers ---
 // TODO: Set the Content-Type header to 'application/json'
-header('Conyent-Type: application/json');
+header('Content-Type: application/json');
 
 // This tells the browser that we're sending JSON data back
 
@@ -88,7 +88,7 @@ if (strlen($password) < 8) {
 // TODO: Get the database connection using the provided function
 // Assume getDBConnection() returns a PDO instance with error mode set to exception
 // The function is defined elsewhere (e.g., in a config file or db.php)
-require _DIR_ . '/../../db.php';
+require __DIR__ . '/../../db.php';
 $db = getDBConnection();
 
 // TODO: Wrap database operations in a try-catch block to handle PDO exceptions
