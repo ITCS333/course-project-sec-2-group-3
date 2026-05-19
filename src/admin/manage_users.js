@@ -13,6 +13,7 @@
 // This array will be populated with data fetched from the PHP API.
 // It acts as a client-side cache so search and sort work without extra network calls.
 let users = [];
+let initialized = false;
 
 // --- Element Selections ---
 // We can safely select elements here because 'defer' guarantees
@@ -354,7 +355,6 @@ if (!response.ok || !result.success) {
 
 users = result.data || [];
 renderTable(users);
-renderTable(users);
 
 changePasswordForm.addEventListener("submit", handleChangePassword);
 userTableBody.addEventListener("click", handleTableClick)
@@ -368,5 +368,38 @@ tableHeaders.forEach(th => {
 }
 
 // --- Initial Page Load ---
+function loadUsersAndInitialize() {
+  fetch("../api/index.php")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Error loading users");
+      }
+      return response.json();
+    })
+    .then(result => {
+      if (!result.success) {
+        throw new Error("Failed to load users");
+      }
+
+      users = result.data || [];
+      renderTable(users);
+
+      if (!initialized) {
+        changePasswordForm.addEventListener("submit", handleChangePassword);
+        userTableBody.addEventListener("click", handleTableClick);
+        addUserForm.addEventListener("submit", handleAddUser);
+        searchInput.addEventListener("input", handleSearch);
+
+        tableHeaders.forEach(th => {
+          th.addEventListener("click", handleSort);
+        });
+
+        initialized = true;
+      }
+    })
+    .catch(error => {
+      alert(error.message);
+    });
+}
 loadUsersAndInitialize();
 //
