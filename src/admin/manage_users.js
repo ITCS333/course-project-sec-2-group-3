@@ -340,66 +340,41 @@ renderTable(users);
  */
 async function loadUsersAndInitialize() {
   // ... your implementation here ...
-const response = await fetch("../api/index.php");
+  try {
+    const response = await fetch("../api/index.php");
 
-if (!response.ok) {
-  alert("Error loading users");
-  return;
-}
-const result = await response.json();
+    if (!response.ok) {
+      throw new Error("Error loading users");
+    }
 
-if (!response.ok || !result.success) {
-  alert("Failed to load users");
-  return;
-}
+    const result = await response.json();
 
-users = result.data || [];
-renderTable(users);
+    if (!result.success) {
+      throw new Error("Failed to load users");
+    }
 
-changePasswordForm.addEventListener("submit", handleChangePassword);
-userTableBody.addEventListener("click", handleTableClick)
-addUserForm.addEventListener("submit", handleAddUser);
-searchInput.addEventListener("input", handleSearch);
+    users = result.data || [];
+    renderTable(users);
 
-tableHeaders.forEach(th => {
-  th.addEventListener("click", handleSort);
-});
+    if (!initialized) {
+      changePasswordForm.addEventListener("submit", handleChangePassword);
+      userTableBody.addEventListener("click", handleTableClick);
+      addUserForm.addEventListener("submit", handleAddUser);
+      searchInput.addEventListener("input", handleSearch);
 
+      tableHeaders.forEach(th => {
+        th.addEventListener("click", handleSort);
+      });
+
+      initialized = true;
+    }
+
+  } catch (error) {
+    alert(error.message);
+  }
 }
 
 // --- Initial Page Load ---
-function loadUsersAndInitialize() {
-  fetch("../api/index.php")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Error loading users");
-      }
-      return response.json();
-    })
-    .then(result => {
-      if (!result.success) {
-        throw new Error("Failed to load users");
-      }
 
-      users = result.data || [];
-      renderTable(users);
-
-      if (!initialized) {
-        changePasswordForm.addEventListener("submit", handleChangePassword);
-        userTableBody.addEventListener("click", handleTableClick);
-        addUserForm.addEventListener("submit", handleAddUser);
-        searchInput.addEventListener("input", handleSearch);
-
-        tableHeaders.forEach(th => {
-          th.addEventListener("click", handleSort);
-        });
-
-        initialized = true;
-      }
-    })
-    .catch(error => {
-      alert(error.message);
-    });
-}
 loadUsersAndInitialize();
 //
