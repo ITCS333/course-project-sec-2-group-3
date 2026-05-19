@@ -30,7 +30,8 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         "success" => false,
-        "message" => "Invalid request method"]);
+        "message" => "Invalid request method."
+        ]);
     exit;
 }
 // Use the $_SERVER superglobal to check the REQUEST_METHOD
@@ -41,16 +42,23 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // TODO: Retrieve the raw POST data
 // The Fetch API sends JSON data in the request body
 // Use file_get_contents with 'php://input' to read the raw request body
-$json = file_get_contents('php://input');  
-
+$json = file_get_contents('php://input');
 // TODO: Decode the JSON data into a PHP associative array
 // Use json_decode with the second parameter set to true
 $data = json_decode($json, true);
+if (!$data) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid JSON"
+    ]);
+    exit;
+}
 // TODO: Extract the email and password from the decoded data
 if (!isset($data['email']) || !isset($data['password'])) {
     echo json_encode([
         "success" => false,
-        "message" => "Email and password are required"]);
+        "message" => "Email and password are required"
+        ]);
     exit;
 }
 
@@ -71,7 +79,8 @@ $password = $data['password'];
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode([
         "success" => false,
-        "message" => "Invalid email format"]);
+        "message" => "Invalid email format"
+        ]);
     exit;
 }
 
@@ -80,7 +89,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 if (strlen($password) < 8) {
     echo json_encode([
         "success" => false,
-        "message" => "Password must be at least 8 characters"]);
+        "message" => "Password must be at least 8 characters"
+        ]);
     exit;
 }
 
@@ -88,8 +98,7 @@ if (strlen($password) < 8) {
 // TODO: Get the database connection using the provided function
 // Assume getDBConnection() returns a PDO instance with error mode set to exception
 // The function is defined elsewhere (e.g., in a config file or db.php)
-require __DIR__ . '/../../db.php';
-$db = getDBConnection();
+
 
 // TODO: Wrap database operations in a try-catch block to handle PDO exceptions
 // This ensures you can return a proper JSON error response if something goes wrong
@@ -101,20 +110,19 @@ try {
     // Use a WHERE clause to filter by email
     // IMPORTANT: Use a placeholder (? or :email) for the email value
     // This prevents SQL injection attacks
- 
+ $sql = "SELECT id, name, email, password FROM users WHERE email = :email LIMIT 1";
 
     // --- Prepare the Statement ---
     // TODO: Prepare the SQL statement using the PDO prepare method
     // Store the result in a variable
     // Prepared statements protect against SQL injection
-$stmt = $db->prepare("SELECT id, name, email, password, is_admin FROM users WHERE email = :email");
-
+   require __DIR__ . '/db.php';
+$db = getDBConnection();
+    $stmt = $db->prepare($sql);
     // --- Execute the Query ---
     // TODO: Execute the prepared statement with the email parameter
     // Bind the email value to the placeholder
- $stmt->bindParam(':email', $email); 
-    $stmt->execute();
-
+$stmt->execute(['email' => $email]);
     // --- Fetch User Data ---
     // TODO: Fetch the user record from the database
     // Use the fetch method with PDO::FETCH_ASSOC
@@ -125,12 +133,7 @@ $stmt = $db->prepare("SELECT id, name, email, password, is_admin FROM users WHER
     // --- Verify User Exists and Password Matches ---
     // TODO: Check if a user was found
     // The fetch method returns false if no record matches
-  if (!$user || !password_verify($password, $user['password'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Invalid email or password']);
-    exit;
-    }
+
 
     // TODO: If user exists, verify the password
     // Use password_verify() to compare the submitted password with the hashed password from the database
@@ -138,14 +141,15 @@ $stmt = $db->prepare("SELECT id, name, email, password, is_admin FROM users WHER
     //
     // NOTE: This assumes passwords are stored as hashes using password_hash() with PASSWORD_DEFAULT
     // (see database seed data). Never store passwords in plain text!
-
+if ($user && password_verify($password, $user["password"])) {
 
     // --- Handle Successful Authentication ---
     // TODO: If password verification succeeds:
-       $_SESSION['user_id']    = $user['id'];
-        $_SESSION['user_name']  = $user['name'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['logged_in']  = true;
+      $_SESSION["user_id"] = $user["id"];
+        $_SESSION["user_name"] = $user["name"];
+        $_SESSION["user_email"] = $user["email"];
+        $_SESSION["is_admin"] = $user["is_admin"];
+        $_SESSION["logged_in"] = true;
     
         // TODO: Store user information in session variables
         // Store: user_id, user_name, user_email, is_admin, logged_in
@@ -159,15 +163,16 @@ $stmt = $db->prepare("SELECT id, name, email, password, is_admin FROM users WHER
         // - 'user' => array with safe user details (id, name, email, is_admin)
         //
         // IMPORTANT: Do NOT include the password in the response
-    $response = [
-           'success' => true,
-           'message' => 'Login successful',
-           'user' => [
-                 'id'    => $user['id'],
-                 'name'  => $user['name'],
-                 'email' => $user['email'],
-                 'is_admin' => $user['is_admin'] ]
-            ];
+      $response = [
+    'success' => true,
+    'message' => 'Login successful',
+    'user' => [
+        'id' => $user['id'],
+        'name' => $user['name'],
+        'email' => $user['email'],
+        'is_admin' => $user['is_admin']
+    ]
+];
 
         // TODO: Encode the response array as JSON and echo it
         echo json_encode($response);
@@ -175,7 +180,7 @@ $stmt = $db->prepare("SELECT id, name, email, password, is_admin FROM users WHER
         
         // TODO: Exit the script to prevent further execution
         exit;
-
+}
 
     // --- Handle Failed Authentication ---
     // TODO: If user doesn't exist OR password verification fails:
@@ -203,7 +208,7 @@ $stmt = $db->prepare("SELECT id, name, email, password, is_admin FROM users WHER
 // TODO: Catch PDO exceptions in the catch block
 // Catch PDOException type
         }catch(PDOException $e){
-
+        
 
     // TODO: Log the error for debugging
     // Use error_log() to write the error message to the server error log
