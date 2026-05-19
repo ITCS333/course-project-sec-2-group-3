@@ -23,7 +23,7 @@ const userTableBody = document.getElementById("user-table-body");
 // TODO: Select the "Add User" form with id="add-user-form".
 const addUserForm = document.getElementById("add-user-form");
 // TODO: Select the "Change Password" form with id="password-form".
-const changPasswordForm = document.getElementById("password-form");
+const changePasswordForm = document.getElementById("password-form");
 // TODO: Select the search input field with id="search-input".
 const searchInput = document.getElementById("search-input");
 // TODO: Select all table header (th) elements inside the thead of id="user-table".
@@ -43,20 +43,20 @@ const tableHeaders = document.querySelectorAll("#user-table thead th");
  */
 function createUserRow(user) {
   // ... your implementation here ...
-const tr = document.creatElemnt("tr");
+const tr = document.createElement("tr");
 
-const nameTd = document.creatElemnt("td");
+const nameTd = document.createElement("td");
 nameTd.textContent = user.name;
 
-const emailTd = document.creatElemnt("td");
+const emailTd = document.createElement("td");
 emailTd.textContent = user.email;
 
-const adminTd = document.creatElemnt("td");
+const adminTd = document.createElement("td");
 adminTd.textContent =user.is_admin == 1 ? "Yes" : "No";
 
 const actionTd = document.creatElemnt("td");
 
-const editBtn = document.creatElemnt("button");
+const editBtn = document.createElement("button");
 editBtn.textContent = "Edit";
 editBtn.classList.add("edit-btn");
 editBtn.dataset.id = user.id;
@@ -115,9 +115,9 @@ userArray.forEach(user => {
 function handleChangePassword(event) {
   // ... your implementation here ...
 event.preventDefault();
-const current_password = document.getElement("current-password").value;
-const new_password = document.getElemnt("new-password").value;
-const confirm_password = document.getElemnt("confirm_password").value;
+const current_password = document.getElementById("current-password").value;
+const new_password = document.getElemntById("new-password").value;
+const confirm_password = document.getElemntById("confirm_password").value;
 
 if (new_password !== confirm_password){
 alert("Passwords do not match.");
@@ -128,7 +128,7 @@ if(new_password.length < 8) {
   return;
 }
 const id = 1; 
- fetch("../api/index.php?action=change_password ",{
+ fetch("../api/index.php?action=change_password",{
   method: "POST",
   headers: { "Content-Type": "application/json"
   },
@@ -165,10 +165,10 @@ function handleAddUser(event) {
   // ... your implementation here ...
   event.preventDefault();
 
-  const name = doucoment.getElementById("user-name").value;
-const email = doucoment.getElementById("user-email").value;
-const password = doucoment.getElemntById("default-password").value;
-const is_admin = doucoment.getElemntById("is-admin").checked ? 1 : 0;
+  const name = document.getElementById("user-name").value;
+const email = document.getElementById("user-email").value;
+const password = document.getElemntById("default-password").value;
+const is_admin = document.getElemntById("is-admin").checked ? 1 : 0;
 
 if (!name || !email || !password){
   alert("Please fill out all required fields.");
@@ -221,12 +221,12 @@ if (target.classList.contains("delete-btn")){
   })
   .then(response => response.json())
   .then(data => {
-    users = user.filter(users => user.id !=id);
+    users = users.filter(user => user.id !=id);
 
     renderTable(users);
   })
   .catch(error => {
-    alert(error.massage);
+    alert(error.message);
   });
 }
 }
@@ -251,7 +251,7 @@ if (!term){
   renderTable(users);
   return;
 }
-const filterd = users.filter(user =>
+const filtered = users.filter(user =>
   user.name.toLowerCase().includes(term)
 );
 renderTable(filtered);
@@ -280,8 +280,8 @@ const index = event.currentTarget.cellIndex;
   const map = ["name", "email", "is_admin"];
 const key = map[index];
 
-let dir = this.dataset.sortDir === "asc" ? "desc" : "asc";
-this.dataset.sortDir = dir;
+let dir = event.currentTarget.dataset.sortDir
+event.currentTarget.dataset.sortDir = dir;
 users.sort((a, b) => {
 if (key == "is_admin") {
   return dir == "asc" ? a[key] - b[key] : b[key] - a[key];
@@ -324,10 +324,10 @@ users = result.data;
 renderTable(users);
 
 changePasswordForm.addEventListener("submit", handleChangePassword);
-addUserForm.addEvenListener("submit", handleAddUser);
-searchInput.addEvenListener("input", handleSearch);
+addUserForm.addEventListener("submit", handleAddUser);
+searchInput.addEventListener("input", handleSearch);
 
-tableHeadrs.forEach(th => {
+tableHeaders.forEach(th => {
   th.addEventListener("click", handleSort);
 });
 
