@@ -52,7 +52,7 @@ messageContainer.textContent = message;
  * 2. Return `true` if the email is valid (e.g., "test@example.com").
  * 3. Return `false` if the email is invalid (e.g., "test@", "test.com", "test@.com").
  *
- * A simple regex for this purpose is: /\S+@\S+\.\S+/
+ * A simple regex for this purpose is: /\S+@\S+\.\S+/ //
  */
 function isValidEmail(email) {
   // ... your implementation here ...
