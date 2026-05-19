@@ -217,7 +217,7 @@ const target = event.target;
 if (target.classList.contains("delete-btn")){
   const id = target.dataset.id;
   fetch(`../api/index.php?id=${id}` , {
-    method: "Delete"
+    method: "DELETE"
   })
   .then(response => response.json())
   .then(data => {
@@ -252,7 +252,8 @@ if (!term){
   return;
 }
 const filtered = users.filter(user =>
-  user.name.toLowerCase().includes(term)
+  user.name.toLowerCase().includes(term) ||
+  user.email.toLowerCase().includes(term)
 );
 renderTable(filtered);
 }
