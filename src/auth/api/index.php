@@ -7,7 +7,7 @@
  * creates sessions, and returns JSON responses.
  */
 
-// --- Session Management ---
+// --- Session Management ---//
 // TODO: Start a PHP session using session_start()
 session_start();
 // This must be called before any output is sent to the browser
