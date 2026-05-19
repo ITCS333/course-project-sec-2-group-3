@@ -569,7 +569,7 @@ function sanitizeInput($data) {
 
     // TODO: Return the sanitized value.
         return $data;
-/
+//
 }
 
 ?>
