@@ -99,22 +99,7 @@ if (strlen($password) < 8) {
 // TODO: Get the database connection using the provided function
 // Assume getDBConnection() returns a PDO instance with error mode set to exception
 // The function is defined elsewhere (e.g., in a config file or db.php)
-function getDBConnection() {
-    $host = "localhost";
-    $dbname = "users_db";
-    $username = "root";
-    $password = "";
-
-    $db = new PDO(
-        "mysql:host=$host;dbname=$dbname;charset=utf8",
-        $username,
-        $password
-    );
-
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    return $db;
-}
+require_once "db.php";
 $db = getDBConnection();
 
 
