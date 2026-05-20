@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Include the database connection file (using Task 1's db.php)
-require_once '../../api/db.php';
+require_once __DIR__ . '/../../api/db.php';
 
 // Get the PDO database connection
 $db = getDBConnection();
