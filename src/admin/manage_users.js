@@ -54,14 +54,14 @@ emailTd.textContent = user.email;
 const adminTd = document.createElement("td");
 adminTd.textContent =user.is_admin == 1 ? "Yes" : "No";
 
-const actionTd = document.creatElemnt("td");
+const actionTd = document.createElement("td");
 
 const editBtn = document.createElement("button");
 editBtn.textContent = "Edit";
 editBtn.classList.add("edit-btn");
 editBtn.dataset.id = user.id;
 
-const deleteBtn = document.cearElemnt("button");
+const deleteBtn = document.createElement("button");
 deleteBtn.textContent = "Delete";
 deleteBtn.classList.add("delete-btn");
 deleteBtn.dataset.id = user.id;
@@ -114,36 +114,46 @@ userArray.forEach(user => {
  */
 function handleChangePassword(event) {
   // ... your implementation here ...
-event.preventDefault();
-const current_password = document.getElementById("current-password").value;
-const new_password = document.getElementById("new-password").value;
-const confirm_password = document.getElementById("confirm-password").value;
+ event.preventDefault();
 
-if (new_password !== confirm_password){
-alert("Passwords do not match.");
-return;
-} 
-if(new_password.length < 8) {
-  alert("Password must be at least 8 characters.");
-  return;
+  const current_password = document.getElementById("current-password").value;
+  const new_password = document.getElementById("new-password").value;
+  const confirm_password = document.getElementById("confirm-password").value;
+
+  if (new_password !== confirm_password) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  if (new_password.length < 8) {
+    alert("Password must be at least 8 characters.");
+    return;
+  }
+
+  const id = 1;
+
+  fetch("../api/index.php?action=change_password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ id, current_password, new_password })
+  })
+    .then(async (response) => {
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to update password");
+      }
+
+      alert("Password updated successfully!");
+      changePasswordForm.reset();
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
 }
-const id = 1; 
- fetch("../api/index.php?action=change_password",{
-  method: "POST",
-  headers: { "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ id,  current_password, new_password })
- })
-.then(response => response.json())
-.then(data => {
-  alert("Password update successfully!");
-  changePasswordForm.reset();
-})
-.catch(error => {
-  alert(error.message);
-});
-  
-}
+
 
 /**
  * TODO: Implement the handleAddUser function.
@@ -166,33 +176,41 @@ function handleAddUser(event) {
   event.preventDefault();
 
   const name = document.getElementById("user-name").value;
-const email = document.getElementById("user-email").value;
-const password = document.getElemntById("default-password").value;
-const is_admin = document.getElemntById("is-admin").checked ? 1 : 0;
+  const email = document.getElementById("user-email").value;
+  const password = document.getElementById("default-password").value;
+  const is_admin = document.getElementById("is-admin").checked ? 1 : 0;
 
-if (!name || !email || !password){
-  alert("Please fill out all required fields.");
-  return;
-}
-if (password.length < 8){
-  alert("Password must be at least 8 characters.");
-  return;
-}
-fetch("../api/index.php",{
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ name, email, password, is_admin})
-})
-.then(response => response.json())
-.then(data => {
-  loadUsersAndInitialize();
-  addUserForm.reset();
-})
-.catch(error => {
-  alert(error.message);
-});
+  if (!name || !email || !password) {
+    alert("Please fill out all required fields.");
+    return;
+  }
+
+  if (password.length < 8) {
+    alert("Password must be at least 8 characters.");
+    return;
+  }
+
+  fetch("../api/index.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, email, password, is_admin })
+  })
+    .then(response => response.json().then(data => {
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to add user");
+      }
+
+      return data;
+    }))
+    .then(() => {
+      loadUsersAndInitialize();
+      addUserForm.reset();
+    })
+    .catch(error => {
+      alert(error.message);
+    });
 }
 
 /**
@@ -214,21 +232,28 @@ function handleTableClick(event) {
   // ... your implementation here ...
 const target = event.target;
 
-if (target.classList.contains("delete-btn")){
-  const id = target.dataset.id;
-  fetch(`../api/index.php?id=${id}` , {
-    method: "DELETE"
-  })
-  .then(response => response.json())
-  .then(data => {
-    users = users.filter(user => user.id !=id);
+  if (target.classList.contains("delete-btn")) {
+    const id = target.dataset.id;
 
-    renderTable(users);
-  })
-  .catch(error => {
-    alert(error.message);
-  });
-}
+    fetch(`../api/index.php?id=${id}`, {
+      method: "DELETE"
+    })
+      .then(response =>
+        response.json().then(data => {
+          if (!response.ok) {
+            throw new Error(data.message || "Delete failed");
+          }
+          return data;
+        })
+      )
+      .then(() => {
+        users = users.filter(user => user.id != id);
+        renderTable(users);
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+  }
 }
 
 
@@ -314,26 +339,41 @@ renderTable(users);
  */
 async function loadUsersAndInitialize() {
   // ... your implementation here ...
-const response = await fetch("../api/index.php");
+  try {
+    const response = await fetch("../api/index.php");
 
-if (!response.ok) {
-  alert("Error loading users");
-  return;
-}
-const result = await response.json();
-users = result.data;
-renderTable(users);
+    if (!response.ok) {
+      throw new Error("Error loading users");
+    }
 
-changePasswordForm.addEventListener("submit", handleChangePassword);
-addUserForm.addEventListener("submit", handleAddUser);
-searchInput.addEventListener("input", handleSearch);
+    const result = await response.json();
 
-tableHeaders.forEach(th => {
-  th.addEventListener("click", handleSort);
-});
+    if (!result.success) {
+      throw new Error("Failed to load users");
+    }
 
+    users = result.data || [];
+    renderTable(users);
+
+    if (!initialized) {
+      changePasswordForm.addEventListener("submit", handleChangePassword);
+      userTableBody.addEventListener("click", handleTableClick);
+      addUserForm.addEventListener("submit", handleAddUser);
+      searchInput.addEventListener("input", handleSearch);
+
+      tableHeaders.forEach(th => {
+        th.addEventListener("click", handleSort);
+      });
+
+      initialized = true;
+    }
+
+  } catch (error) {
+    alert(error.message);
+  }
 }
 
 // --- Initial Page Load ---
+
 loadUsersAndInitialize();
 //

@@ -52,7 +52,7 @@ messageContainer.textContent = message;
  * 2. Return `true` if the email is valid (e.g., "test@example.com").
  * 3. Return `false` if the email is invalid (e.g., "test@", "test.com", "test@.com").
  *
- * A simple regex for this purpose is: /\S+@\S+\.\S+/
+ * A simple regex for this purpose is: /\S+@\S+\.\S+/ //
  */
 function isValidEmail(email) {
   // ... your implementation here ...
@@ -105,8 +105,7 @@ function handleLogin(event) {
     displayMessage("Password must be at least 8 characters.", "error");
     return;
   }
-
-  fetch("./api/index.php", {
+fetch("src/auth/api/index.php",{
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -122,7 +121,7 @@ function handleLogin(event) {
     if (data.success) {
       displayMessage("Login successful!", "success");
 
-      if (data.user && data.user.is_admin == 1) {
+      if (Number(data.user?.is_admin) === 1) {
         window.location.href = "/src/admin/manage_users.html";
       } else {
         window.location.href = "/index.html";
