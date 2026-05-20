@@ -13,6 +13,7 @@
 // This array will be populated with data fetched from the PHP API.
 // It acts as a client-side cache so search and sort work without extra network calls.
 let users = [];
+let initialized = false;
 
 // --- Element Selections ---
 // We can safely select elements here because 'defer' guarantees
@@ -147,8 +148,9 @@ function handleChangePassword(event) {
       }
 
       alert("Password updated successfully!");
-      changePasswordForm.reset();
-    })
+document.getElementById("current-password").value = "";
+document.getElementById("new-password").value = "";
+document.getElementById("confirm-password").value = "";    })
     .catch((error) => {
       alert(error.message);
     });
@@ -355,18 +357,18 @@ async function loadUsersAndInitialize() {
     users = result.data || [];
     renderTable(users);
 
-    if (!initialized) {
-      changePasswordForm.addEventListener("submit", handleChangePassword);
-      userTableBody.addEventListener("click", handleTableClick);
-      addUserForm.addEventListener("submit", handleAddUser);
-      searchInput.addEventListener("input", handleSearch);
+ if (!initialized) {
+  changePasswordForm.addEventListener("submit", handleChangePassword);
+  addUserForm.addEventListener("submit", handleAddUser);
+  userTableBody.addEventListener("click", handleTableClick);
+  searchInput.addEventListener("input", handleSearch);
 
-      tableHeaders.forEach(th => {
-        th.addEventListener("click", handleSort);
-      });
+  tableHeaders.forEach(th => {
+    th.addEventListener("click", handleSort);
+  });
 
-      initialized = true;
-    }
+  initialized = true;
+}
 
   } catch (error) {
     alert(error.message);
