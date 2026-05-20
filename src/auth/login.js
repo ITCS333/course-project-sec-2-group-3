@@ -105,7 +105,7 @@ function handleLogin(event) {
     displayMessage("Password must be at least 8 characters.", "error");
     return;
   }
-  fetch("/src/auth/api/index.php", {
+  fetch("api/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -114,10 +114,9 @@ function handleLogin(event) {
       email: email,
       password: password
     })
-   })
+  })
   .then(response => response.json())
   .then(data => {
-
     if (data.success) {
       displayMessage("Login successful!", "success");
 
@@ -126,15 +125,15 @@ function handleLogin(event) {
       } else {
         window.location.href = "/index.html";
       }
-
     } else {
       displayMessage(data.message, "error");
     }
-
   })
   .catch(error => {
     console.error(error);
     displayMessage("Server error. Please try again.", "error");
   });
+
 }
-loginForm.addEventListener('submit', handleLogin); 
+
+loginForm.addEventListener('submit', handleLogin);
