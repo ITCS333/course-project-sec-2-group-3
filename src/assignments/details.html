@@ -18,6 +18,128 @@
     <title>Assignment Details</title>
 
     <!-- TODO: Link to your CSS framework or stylesheet. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7eeee;
+        }
+
+        header {
+            background-color: #9e5c6a;
+            color: #fdf5f6;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-radius: 6px;
+        }
+
+        h1, h2 {
+            margin: 0 0 15px 0;
+            color: #5c2d38;
+        }
+
+        header h1 {
+            color: #fdf5f6;
+        }
+
+        main {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        article, section {
+            background: #fffafa;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 6px;
+            box-shadow: 0px 2px 5px rgba(158,92,106,0.12);
+        }
+
+        fieldset {
+            border: 1px solid #e0b4bc;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #9e5c6a;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #5c2d38;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #d4a0aa;
+            box-sizing: border-box;
+            height: 80px;
+            resize: vertical;
+            background-color: #fdf0f2;
+            color: #5c2d38;
+            font-weight: 500;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #9e5c6a;
+            color: #fdf5f6;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #7d4455;
+        }
+
+        p {
+            color: #5c2d38;
+            font-weight: 500;
+        }
+
+        ul {
+            color: #5c2d38;
+        }
+
+        ul a {
+            color: #9e5c6a;
+        }
+
+        ul a:hover {
+            color: #5c2d38;
+        }
+
+        #comment-list article {
+            background: #fdf0f2;
+            border-left: 4px solid #9e5c6a;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            box-shadow: none;
+        }
+
+        #comment-list article footer {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #9e5c6a;
+            font-weight: 600;
+        }
+
+    </style>
 
     <!-- Required: link details.js with defer. -->
     <script src="details.js" defer></script>
