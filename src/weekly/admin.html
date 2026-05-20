@@ -9,74 +9,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- TODO: Add the <meta> tag for character encoding (UTF-8). -->
+    <!-- Add the <meta> tag for character encoding (UTF-8). -->
     <meta charset="UTF-8">
 
-    <!-- TODO: Add the responsive viewport <meta> tag
+    <!-- Add the responsive viewport <meta> tag
          (width=device-width, initial-scale=1.0). -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- TODO: Add a <title>, e.g., "Manage Weekly Breakdown". -->
+    <!-- Add a <title>, e.g., "Manage Weekly Breakdown". -->
     <title>Manage Weekly Breakdown</title>
 
-    <!-- TODO: Link to your CSS framework or stylesheet. -->
-    <link rel="stylesheet" href="../../styles.css">
+    <!-- Link to your CSS framework or stylesheet. -->
+    <!-- Using a simple internal style for clarity (replace with your own CSS file if needed) -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        section {
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        fieldset {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+        legend {
+            font-weight: bold;
+            padding: 0 0.5rem;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.25rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #ecf0f1;
+        }
+        .edit-btn {
+            background-color: #f39c12;
+            margin-right: 0.5rem;
+        }
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
 
     <!-- Required: link admin.js with defer. -->
     <script src="admin.js" defer></script>
 </head>
 <body>
 
-    <!-- TODO: Create a <header> containing an <h1>
+    <!-- Create a <header> containing an <h1>
          "Manage Weekly Breakdown". -->
     <header>
         <h1>Manage Weekly Breakdown</h1>
     </header>
 
-    <!-- TODO: Create the <main> content area. -->
+    <!-- Create the <main> content area. -->
     <main>
 
         <!-- ============================================================
              Section 1: Add / Edit Week Form
              ============================================================ -->
-        <!-- TODO: Create a <section> for the form. -->
+        <!-- Create a <section> for the form. -->
         <section>
 
-            <!-- TODO: Add a sub-heading <h2> "Add a New Week". -->
+            <!-- Add a sub-heading <h2> "Add a New Week". -->
             <h2>Add a New Week</h2>
 
-            <!-- TODO: Create a <form id="week-form"> (action can be "#").
+            <!-- Create a <form id="week-form"> (action can be "#").
                  The id is required by admin.js. -->
             <form id="week-form" action="#">
 
-                <!-- TODO: Use a <fieldset> to group the form controls. -->
+                <!-- Use a <fieldset> to group the form controls. -->
                 <fieldset>
-                    <!-- TODO: Add a <legend>, e.g., "Weekly Details". -->
+                    <!-- Add a <legend>, e.g., "Weekly Details". -->
                     <legend>Weekly Details</legend>
 
-                    <!-- TODO: Add a <label> and <input> for the week title.
+                    <!-- Add a <label> and <input> for the week title.
                          - label for="week-title"
                          - input id="week-title", type="text", required
                          - Placeholder: "Week 1: Introduction to HTML" -->
                     <label for="week-title">Week Title:</label>
-                    <input type="text" id="week-title" required placeholder="Week 1: Introduction to HTML">
+                    <input type="text" id="week-title" name="week-title" required placeholder="Week 1: Introduction to HTML">
 
-                    <!-- TODO: Add a <label> and <input> for the start date.
+                    <!-- Add a <label> and <input> for the start date.
                          - label for="week-start-date"
                          - input id="week-start-date", type="date", required
                          - Maps to the start_date column in the weeks table. -->
                     <label for="week-start-date">Start Date:</label>
-                    <input type="date" id="week-start-date" required>
+                    <input type="date" id="week-start-date" name="week-start-date" required>
 
-                    <!-- TODO: Add a <label> and <textarea> for the week
-                         description.
+                    <!-- Add a <label> and <textarea> for the week description.
                          - label for="week-description"
                          - textarea id="week-description", rows="5"
                          - Maps to the description column in the weeks table. -->
                     <label for="week-description">Description:</label>
-                    <textarea id="week-description" rows="5"></textarea>
+                    <textarea id="week-description" name="week-description" rows="5" placeholder="Describe the content of this week..."></textarea>
 
-                    <!-- TODO: Add a <label> and <textarea> for resource links
+                    <!-- Add a <label> and <textarea> for resource links
                          (one URL per line).
                          - label for="week-links"
                          - textarea id="week-links", rows="3"
@@ -84,9 +171,9 @@
                            weeks table. admin.js will split the textarea
                            value on newlines and send it as an array. -->
                     <label for="week-links">Resource Links (one URL per line):</label>
-                    <textarea id="week-links" rows="3" placeholder="https://example.com/resource1&#10;https://example.com/resource2"></textarea>
+                    <textarea id="week-links" name="week-links" rows="3" placeholder="https://example.com/lecture1&#10;https://example.com/slides"></textarea>
 
-                    <!-- TODO: Add a submit <button>.
+                    <!-- Add a submit <button>.
                          - id="add-week", type="submit"
                          - Text: "Add Week"
                          - When the form is in edit mode, admin.js will
@@ -101,16 +188,16 @@
         <!-- ============================================================
              Section 2: Existing Weekly Entries
              ============================================================ -->
-        <!-- TODO: Create a <section> to display the current list of weeks. -->
+        <!-- Create a <section> to display the current list of weeks. -->
         <section>
 
-            <!-- TODO: Add a sub-heading <h2> "Current Weekly Breakdown". -->
+            <!-- Add a sub-heading <h2> "Current Weekly Breakdown". -->
             <h2>Current Weekly Breakdown</h2>
 
-            <!-- TODO: Create a <table id="weeks-table">. -->
+            <!-- Create a <table id="weeks-table">. -->
             <table id="weeks-table">
 
-                <!-- TODO: Create a <thead> with a <tr> containing <th>
+                <!-- Create a <thead> with a <tr> containing <th>
                      elements:
                      - "Week Title"
                      - "Start Date"
@@ -127,9 +214,9 @@
                     </tr>
                 </thead>
 
-                <!-- TODO: Create a <tbody id="weeks-tbody">.
+                <!-- Create a <tbody id="weeks-tbody">.
                      The id is required by admin.js so it can inject
-                     <tr> rows. admin.js will clear and repopulate this
+                     the rows. admin.js will clear and repopulate this
                      tbody whenever the data changes. -->
                 <tbody id="weeks-tbody">
                     <!-- admin.js will inject rows here. Each row follows
