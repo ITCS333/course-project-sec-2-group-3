@@ -1,48 +1,66 @@
-/*
-  Requirement: Populate the "Course Resources" list page.
-
-  Instructions:
-  1. Link this file to `list.html` using:
-     <script src="list.js" defer></script>
-
-  2. In `list.html`, add id="resource-list-section" to the
-     <section> element that will contain the resource articles.
-
-  3. Implement the TODOs below.
-*/
-
-// --- Element Selections ---
-// TODO: Select the section for the resource list ('#resource-list-section').
-
-// --- Functions ---
+// Element Selection
+const resourceListSection = document.getElementById('resource-list-section');
 
 /**
- * TODO: Implement the createResourceArticle function.
- * It takes one resource object { id, title, description, link }.
- * It should return an <article> element matching the structure in `list.html`.
- * The "View Resource & Discussion" link's `href` MUST be set to
- * `details.html?id=${id}` so the detail page knows which resource to load.
+ * Create resource article
  */
 function createResourceArticle(resource) {
-  // ... your implementation here ...
+    // Create article element
+    const article = document.createElement('article');
+    
+    // Add heading for title (h3)
+    const title = document.createElement('h3');
+    title.textContent = resource.title;
+    article.appendChild(title);
+    
+    // Add paragraph for description
+    const description = document.createElement('p');
+    description.textContent = resource.description || 'No description available.';
+    article.appendChild(description);
+    
+    // Add anchor tag for detail link
+    const detailLink = document.createElement('a');
+    detailLink.href = `details.html?id=${resource.id}`;
+    detailLink.textContent = 'View Resource & Discussion';
+    detailLink.className = 'button';
+    article.appendChild(detailLink);
+    
+    return article;
 }
 
 /**
- * TODO: Implement the loadResources function.
- * This function must be 'async'.
- * It should:
- * 1. Use `fetch()` to GET data from the API endpoint:
- *    './api/index.php'
- * 2. Parse the JSON response. The API returns { success: true, data: [...] }.
- * 3. Clear any existing content from the list section.
- * 4. Loop through the resources array in `data`. For each resource:
- *    - Call `createResourceArticle()` with the resource object.
- *    - Append the returned <article> element to the list section.
+ * Load and display all resources
  */
 async function loadResources() {
-  // ... your implementation here ...
+    try {
+        // Fetch from API
+        const response = await fetch('./api/index.php');
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            // Clear section
+            resourceListSection.innerHTML = '';
+            
+            // Check if no resources
+            if (result.data.length === 0) {
+                resourceListSection.innerHTML = '<p>No resources available yet. Check back later!</p>';
+                return;
+            }
+            
+            // Loop and append each resource
+            result.data.forEach(resource => {
+                resourceListSection.appendChild(createResourceArticle(resource));
+            });
+        } else {
+            resourceListSection.innerHTML = '<p>Failed to load resources. Please try again later.</p>';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        resourceListSection.innerHTML = '<p>An error occurred while loading resources.</p>';
+    }
 }
 
-// --- Initial Page Load ---
+// Load resources
+loadResources();
 // Call the function to populate the page.
 loadResources();
