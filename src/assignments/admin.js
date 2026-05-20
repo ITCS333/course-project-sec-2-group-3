@@ -199,7 +199,7 @@ async function handleUpdateAssignment(id, fields) {
 
   if (result.success) {
     const index = assignments.findIndex(a => a.id === id);
-    if (index !== -1) {
+    if (index !==-1) {
       assignments[index] = { id, title, due_date, description, files };
     }
       renderTable();
