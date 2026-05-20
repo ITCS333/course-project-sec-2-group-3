@@ -1,132 +1,175 @@
-/*
-  Requirement: Populate the resource detail page and discussion forum.
-
-  Instructions:
-  1. Link this file to `details.html` using:
-     <script src="details.js" defer></script>
-
-  2. In `details.html`, add the following IDs:
-     - To the <h1>:                           id="resource-title"
-     - To the description <p>:                id="resource-description"
-     - To the "Access Resource Material" <a>: id="resource-link"
-     - To the <div> for comments:             id="comment-list"
-     - To the comment <form>:                 id="comment-form"
-     - To the <textarea>:                     id="new-comment"
-
-  3. Implement the TODOs below.
-*/
-
-// --- Global Data Store ---
-// These will hold the data related to this specific resource.
+// Global Data Store
 let currentResourceId = null;
 let currentComments = [];
 
-// --- Element Selections ---
-// TODO: Select all the elements you added IDs for in step 2.
-
-// --- Functions ---
+// Element Selections
+const resourceTitle = document.getElementById('resource-title');
+const resourceDescription = document.getElementById('resource-description');
+const resourceLink = document.getElementById('resource-link');
+const commentList = document.getElementById('comment-list');
+const commentForm = document.getElementById('comment-form');
+const newComment = document.getElementById('new-comment');
 
 /**
- * TODO: Implement the getResourceIdFromURL function.
- * It should:
- * 1. Get the query string from `window.location.search`.
- * 2. Use the `URLSearchParams` object to get the value of the 'id' parameter.
- * 3. Return the id value (as a string).
+ * Get resource ID from URL
  */
 function getResourceIdFromURL() {
-  // ... your implementation here ...
+    // Get query string and get 'id' parameter
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id');
 }
 
 /**
- * TODO: Implement the renderResourceDetails function.
- * It takes one resource object { id, title, description, link }.
- * It should:
- * 1. Set the `textContent` of the title element (id="resource-title")
- *    to the resource's title.
- * 2. Set the `textContent` of the description element (id="resource-description")
- *    to the resource's description.
- * 3. Set the `href` attribute of the link element (id="resource-link")
- *    to the resource's link.
+ * Render resource details
  */
 function renderResourceDetails(resource) {
-  // ... your implementation here ...
+    // Set title textContent
+    resourceTitle.textContent = resource.title;
+    
+    // Set description textContent
+    resourceDescription.textContent = resource.description || 'No description provided.';
+    
+    // Set link href attribute
+    resourceLink.href = resource.link;
 }
 
 /**
- * TODO: Implement the createCommentArticle function.
- * It takes one comment object { id, resource_id, author, text, created_at }.
- * It should return an <article> element matching the structure in `details.html`:
- * - A <p> containing the comment's text.
- * - A <footer> containing the comment's author
- *   (e.g., "Posted by: Ali Hassan").
+ * Create comment article
  */
 function createCommentArticle(comment) {
-  // ... your implementation here ...
+    // Create article element
+    const article = document.createElement('article');
+    
+    // Add p for comment text
+    const textP = document.createElement('p');
+    textP.textContent = comment.text;
+    article.appendChild(textP);
+    
+    // Add footer for author
+    const footer = document.createElement('footer');
+    const date = new Date(comment.created_at).toLocaleDateString();
+    footer.textContent = `Posted by: ${comment.author} on ${date}`;
+    article.appendChild(footer);
+    
+    return article;
 }
 
 /**
- * TODO: Implement the renderComments function.
- * It should:
- * 1. Clear the comment list container (id="comment-list").
- * 2. Loop through the global `currentComments` array.
- * 3. For each comment, call `createCommentArticle()` and
- *    append the returned <article> to the comment list container.
+ * Render all comments
  */
 function renderComments() {
-  // ... your implementation here ...
+    // Clear comment list
+    commentList.innerHTML = '';
+    
+    // If no comments
+    if (currentComments.length === 0) {
+        commentList.innerHTML = '<p>No comments yet. Be the first to comment!</p>';
+        return;
+    }
+    
+    // Loop and append each comment
+    currentComments.forEach(comment => {
+        commentList.appendChild(createCommentArticle(comment));
+    });
 }
 
 /**
- * TODO: Implement the handleAddComment function.
- * This is the event handler for the comment form's 'submit' event.
- * It should:
- * 1. Prevent the form's default submission.
- * 2. Get the text from the textarea (id="new-comment").
- * 3. If the text is empty, return early.
- * 4. Use `fetch()` to POST the new comment to the API:
- *    - URL: './api/index.php?action=comment'
- *    - Method: POST
- *    - Headers: { 'Content-Type': 'application/json' }
- *    - Body: JSON.stringify({
- *        resource_id: currentResourceId,
- *        author: 'Student',
- *        text: commentText
- *      })
- *      ('Student' is an acceptable hardcoded author for this exercise.)
- * 5. On success, add the new comment object returned by the API to the
- *    global `currentComments` array.
- * 6. Call `renderComments()` to refresh the comment list.
- * 7. Clear the textarea.
+ * Handle adding a new comment
  */
-function handleAddComment(event) {
-  // ... your implementation here ...
+async function handleAddComment(event) {
+    // Prevent default submission
+    event.preventDefault();
+    
+    // Get comment text
+    const commentText = newComment.value.trim();
+    
+    // Validate
+    if (!commentText) {
+        alert('Please enter a comment');
+        return;
+    }
+    
+    try {
+        // Send POST request
+        const response = await fetch('./api/index.php?action=comment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                resource_id: currentResourceId,
+                author: 'Student',
+                text: commentText
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Reload comments
+            const commentsResponse = await fetch(`./api/index.php?resource_id=${currentResourceId}&action=comments`);
+            const commentsResult = await commentsResponse.json();
+            if (commentsResult.success) {
+                currentComments = commentsResult.data;
+                renderComments();
+            }
+            // Clear textarea
+            newComment.value = '';
+        } else {
+            alert(result.message || 'Failed to post comment');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while posting your comment');
+    }
 }
 
 /**
- * TODO: Implement the initializePage function.
- * This function must be 'async'.
- * It should:
- * 1. Call `getResourceIdFromURL()` and store the result in `currentResourceId`.
- * 2. If no id is found, set the title element's textContent to
- *    "Resource not found." and stop.
- * 3. Fetch the resource details and its comments at the same time
- *    using Promise.all():
- *    - Resource URL:  `./api/index.php?id=${currentResourceId}`
- *      Response:      { success: true, data: { id, title, description, link, created_at } }
- *    - Comments URL:  `./api/index.php?resource_id=${currentResourceId}&action=comments`
- *      Response:      { success: true, data: [ ...comment objects ] }
- * 4. Store the comments array in the global `currentComments` variable.
- *    (If no comments exist, use an empty array.)
- * 5. If the resource is found:
- *    - Call `renderResourceDetails()` with the resource object.
- *    - Call `renderComments()` to display the initial comments.
- *    - Add the 'submit' event listener to the comment form
- *      (id="comment-form"), calling `handleAddComment`.
- * 6. If the resource is not found, display an error in the title element.
+ * Initialize the page
  */
 async function initializePage() {
-  // ... your implementation here ...
+    // Get resource ID from URL
+    currentResourceId = getResourceIdFromURL();
+    
+    // If no ID, show error
+    if (!currentResourceId) {
+        resourceTitle.textContent = 'Resource not found';
+        resourceDescription.textContent = 'No resource ID provided.';
+        return;
+    }
+    
+    try {
+        // Fetch resource and comments in parallel
+        const [resourceResponse, commentsResponse] = await Promise.all([
+            fetch(`./api/index.php?id=${currentResourceId}`),
+            fetch(`./api/index.php?resource_id=${currentResourceId}&action=comments`)
+        ]);
+        
+        const resourceResult = await resourceResponse.json();
+        const commentsResult = await commentsResponse.json();
+        
+        // Handle resource
+        if (resourceResult.success && resourceResult.data) {
+            renderResourceDetails(resourceResult.data);
+        } else {
+            resourceTitle.textContent = 'Resource not found';
+            resourceDescription.textContent = 'The requested resource does not exist.';
+        }
+        
+        // Handle comments
+        if (commentsResult.success) {
+            currentComments = commentsResult.data || [];
+            renderComments();
+        }
+        
+        // Add event listener to comment form
+        commentForm.addEventListener('submit', handleAddComment);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        resourceTitle.textContent = 'Error loading resource';
+        resourceDescription.textContent = 'An error occurred while loading the resource.';
+    }
 }
 
-// --- Initial Page Load ---
+// Initialize page
+initializePage();
 initializePage();

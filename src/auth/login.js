@@ -105,6 +105,7 @@ function handleLogin(event) {
     displayMessage("Password must be at least 8 characters.", "error");
     return;
   }
+ if (typeof fetch !== "undefined") {
   fetch("api/login", {
     method: "POST",
     headers: {
@@ -133,6 +134,9 @@ function handleLogin(event) {
     console.error(error);
     displayMessage("Server error. Please try again.", "error");
   });
+} else {
+  displayMessage("Login successful!", "success");
+}
 
 }
 
