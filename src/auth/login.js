@@ -137,4 +137,5 @@ fetch("src/auth/api/index.php",{
     displayMessage("Server error. Please try again.", "error");
   });
 }
-loginForm.addEventListener('submit', handleLogin);
+loginForm.addEventListener('submit', handleLogin); 
+//
