@@ -1,91 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+// --- Element Selections ---
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Week Details</title>
-
-    <link rel="stylesheet" href="../styles/main.css">
-
-    <script src="details.js" defer></script>
-
-</head>
-<body>
-
-    <header>
-
-        <h1 id="week-title"></h1>
-
-    </header>
-
-    <main>
-
-        <!-- ========================================================= -->
-        <!-- Section 1: Weekly Information -->
-        <!-- ========================================================= -->
-
-        <article>
-
-            <p id="week-start-date"></p>
-
-            <h2>Description & Notes</h2>
-
-            <p id="week-description"></p>
-
-            <h2>Exercises & Resources</h2>
-
-            <ul id="week-links-list"></ul>
-
-        </article>
+const weekListSection =
+    document.getElementById("week-list-section");
 
 
-        <!-- ========================================================= -->
-        <!-- Section 2: Discussion Forum -->
-        <!-- ========================================================= -->
+// --- Functions ---
 
-        <section id="discussion-forum">
+function createWeekArticle(week) {
 
-            <h2>Discussion</h2>
+    const article = document.createElement("article");
 
-            <!-- Existing Comments -->
+    const title = document.createElement("h2");
+    title.textContent = week.title;
 
-            <div id="comment-list">
+    const startDate = document.createElement("p");
+    startDate.textContent =
+        `Starts on: ${week.start_date}`;
 
-                <!-- details.js injects comments here -->
+    const description = document.createElement("p");
+    description.textContent = week.description;
 
-            </div>
+    const link = document.createElement("a");
+
+    link.href = `details.html?id=${week.id}`;
+
+    link.textContent =
+        "View Details & Discussion";
+
+    article.appendChild(title);
+
+    article.appendChild(startDate);
+
+    article.appendChild(description);
+
+    article.appendChild(link);
+
+    return article;
+}
 
 
-            <!-- Add Comment Form -->
+async function loadWeeks() {
 
-            <form id="comment-form" action="#">
+    try {
 
-                <fieldset>
+        const response =
+            await fetch("./api/index.php");
 
-                    <legend>Leave a Comment</legend>
+        const result = await response.json();
 
-                    <label for="new-comment">
-                        Your Comment
-                    </label>
+        weekListSection.innerHTML = "";
 
-                    <textarea id="new-comment"
-                              required></textarea>
+        result.data.forEach((week) => {
 
-                    <button type="submit">
-                        Post Comment
-                    </button>
+            const article =
+                createWeekArticle(week);
 
-                </fieldset>
+            weekListSection.appendChild(article);
+        });
 
-            </form>
+    } catch (error) {
 
-        </section>
+        console.error(
+            "Error loading weeks:",
+            error
+        );
 
-    </main>
+        weekListSection.innerHTML =
+            "<p>Failed to load weeks.</p>";
+    }
+}
 
-</body>
-</html>
+
+// --- Initial Page Load ---
+
+loadWeeks();
