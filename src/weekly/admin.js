@@ -32,8 +32,10 @@ let weeks = [];
 
 // --- Element Selections ---
 // TODO: Select the week form by id 'week-form'.
+const weekForm = document.getElementById('week-form');
 
 // TODO: Select the weeks table body by id 'weeks-tbody'.
+const weeksTbody = document.getElementById('weeks-tbody');
 
 // --- Functions ---
 
@@ -54,7 +56,41 @@ let weeks = [];
  *      The data-id holds the integer primary key from the weeks table.
  */
 function createWeekRow(week) {
-  // ... your implementation here ...
+    const row = document.createElement('tr');
+
+    // Title cell
+    const titleCell = document.createElement('td');
+    titleCell.textContent = week.title;
+    row.appendChild(titleCell);
+
+    // Start date cell
+    const dateCell = document.createElement('td');
+    dateCell.textContent = week.start_date;
+    row.appendChild(dateCell);
+
+    // Description cell
+    const descCell = document.createElement('td');
+    descCell.textContent = week.description;
+    row.appendChild(descCell);
+
+    // Actions cell
+    const actionsCell = document.createElement('td');
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.className = 'edit-btn';
+    editBtn.dataset.id = week.id;
+    actionsCell.appendChild(editBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.dataset.id = week.id;
+    actionsCell.appendChild(deleteBtn);
+
+    row.appendChild(actionsCell);
+
+    return row;
 }
 
 /**
@@ -67,7 +103,14 @@ function createWeekRow(week) {
  *    to the table body.
  */
 function renderTable() {
-  // ... your implementation here ...
+    // Clear table body
+    weeksTbody.innerHTML = '';
+
+    // Loop through weeks and append each row
+    for (const week of weeks) {
+        const row = createWeekRow(week);
+        weeksTbody.appendChild(row);
+    }
 }
 
 /**
@@ -93,7 +136,54 @@ function renderTable() {
  *        - Reset the form.
  */
 async function handleAddWeek(event) {
-  // ... your implementation here ...
+    event.preventDefault();
+
+    // Get form field values
+    const title = document.getElementById('week-title').value.trim();
+    const start_date = document.getElementById('week-start-date').value;
+    const description = document.getElementById('week-description').value.trim();
+    const linksTextarea = document.getElementById('week-links').value;
+    // Split by newline, trim each, filter out empty strings
+    const links = linksTextarea.split(/\r?\n/).map(s => s.trim()).filter(s => s !== '');
+
+    const submitBtn = document.getElementById('add-week');
+    const editId = submitBtn.getAttribute('data-edit-id');
+
+    if (editId !== null) {
+        // Edit mode: call handleUpdateWeek
+        const id = parseInt(editId, 10);
+        await handleUpdateWeek(id, { title, start_date, description, links });
+    } else {
+        // Create mode: POST new week
+        try {
+            const response = await fetch('./api/index.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, start_date, description, links })
+            });
+            const result = await response.json();
+            if (result.success && result.id) {
+                // Add new week to global array
+                const newWeek = {
+                    id: result.id,
+                    title,
+                    start_date,
+                    description,
+                    links
+                };
+                weeks.push(newWeek);
+                renderTable();
+                // Reset form
+                weekForm.reset();
+            } else {
+                console.error('Error adding week:', result.error);
+                alert('Failed to add week: ' + (result.error || 'Unknown error'));
+            }
+        } catch (err) {
+            console.error('Network error:', err);
+            alert('Network error while adding week.');
+        }
+    }
 }
 
 /**
@@ -114,7 +204,33 @@ async function handleAddWeek(event) {
  *      its data-edit-id attribute.
  */
 async function handleUpdateWeek(id, fields) {
-  // ... your implementation here ...
+    try {
+        const response = await fetch('./api/index.php', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, ...fields })
+        });
+        const result = await response.json();
+        if (result.success) {
+            // Update the week in the global array
+            const index = weeks.findIndex(week => week.id === id);
+            if (index !== -1) {
+                weeks[index] = { id, ...fields };
+                renderTable();
+            }
+            // Reset form and restore button
+            weekForm.reset();
+            const submitBtn = document.getElementById('add-week');
+            submitBtn.textContent = 'Add Week';
+            submitBtn.removeAttribute('data-edit-id');
+        } else {
+            console.error('Error updating week:', result.error);
+            alert('Failed to update week: ' + (result.error || 'Unknown error'));
+        }
+    } catch (err) {
+        console.error('Network error:', err);
+        alert('Network error while updating week.');
+    }
 }
 
 /**
@@ -138,7 +254,42 @@ async function handleUpdateWeek(id, fields) {
  *       and set its data-edit-id attribute to the week's id.
  */
 async function handleTableClick(event) {
-  // ... your implementation here ...
+    const target = event.target;
+    if (target.classList.contains('delete-btn')) {
+        const id = parseInt(target.dataset.id, 10);
+        try {
+            const response = await fetch(`./api/index.php?id=${id}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+            if (result.success) {
+                // Remove week from global array
+                weeks = weeks.filter(week => week.id !== id);
+                renderTable();
+            } else {
+                console.error('Error deleting week:', result.error);
+                alert('Failed to delete week: ' + (result.error || 'Unknown error'));
+            }
+        } catch (err) {
+            console.error('Network error:', err);
+            alert('Network error while deleting week.');
+        }
+    } else if (target.classList.contains('edit-btn')) {
+        const id = parseInt(target.dataset.id, 10);
+        const week = weeks.find(week => week.id === id);
+        if (week) {
+            // Populate form fields
+            document.getElementById('week-title').value = week.title;
+            document.getElementById('week-start-date').value = week.start_date;
+            document.getElementById('week-description').value = week.description;
+            document.getElementById('week-links').value = week.links.join('\n');
+
+            // Change submit button to update mode
+            const submitBtn = document.getElementById('add-week');
+            submitBtn.textContent = 'Update Week';
+            submitBtn.setAttribute('data-edit-id', id);
+        }
+    }
 }
 
 /**
@@ -155,7 +306,26 @@ async function handleTableClick(event) {
  *    (calls handleTableClick — event delegation for edit and delete).
  */
 async function loadAndInitialize() {
-  // ... your implementation here ...
+    try {
+        const response = await fetch('./api/index.php');
+        const result = await response.json();
+        if (result.success && Array.isArray(result.data)) {
+            weeks = result.data;
+            renderTable();
+        } else {
+            console.error('Failed to load weeks:', result.error);
+            weeks = [];
+            renderTable();
+        }
+    } catch (err) {
+        console.error('Network error loading weeks:', err);
+        weeks = [];
+        renderTable();
+    }
+
+    // Attach event listeners
+    weekForm.addEventListener('submit', handleAddWeek);
+    weeksTbody.addEventListener('click', handleTableClick);
 }
 
 // --- Initial Page Load ---
