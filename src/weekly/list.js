@@ -13,6 +13,7 @@
 
 // --- Element Selections ---
 // TODO: Select the section for the week list using its id 'week-list-section'.
+const weekListSection = document.getElementById('week-list-section');
 
 // --- Functions ---
 
@@ -42,7 +43,26 @@
  * the weeks table) so that details.js can read the id from the URL.
  */
 function createWeekArticle(week) {
-  // ... your implementation here ...
+    const article = document.createElement('article');
+
+    const title = document.createElement('h2');
+    title.textContent = week.title;
+    article.appendChild(title);
+
+    const startDatePara = document.createElement('p');
+    startDatePara.textContent = `Starts on: ${week.start_date}`;
+    article.appendChild(startDatePara);
+
+    const descPara = document.createElement('p');
+    descPara.textContent = week.description;
+    article.appendChild(descPara);
+
+    const detailLink = document.createElement('a');
+    detailLink.href = `details.html?id=${week.id}`;
+    detailLink.textContent = 'View Details & Discussion';
+    article.appendChild(detailLink);
+
+    return article;
 }
 
 /**
@@ -59,7 +79,27 @@ function createWeekArticle(week) {
  *    - Append the returned <article> to the list section.
  */
 async function loadWeeks() {
-  // ... your implementation here ...
+    try {
+        const response = await fetch('./api/index.php');
+        const result = await response.json();
+
+        if (result.success && Array.isArray(result.data)) {
+            // Clear any existing content
+            weekListSection.innerHTML = '';
+
+            // Append each week article
+            for (const week of result.data) {
+                const article = createWeekArticle(week);
+                weekListSection.appendChild(article);
+            }
+        } else {
+            weekListSection.innerHTML = '<p>Failed to load weekly breakdown. Please try again later.</p>';
+            console.error('API error:', result.error);
+        }
+    } catch (err) {
+        weekListSection.innerHTML = '<p>Network error: Could not load weekly breakdown.</p>';
+        console.error('Fetch error:', err);
+    }
 }
 
 // --- Initial Page Load ---
