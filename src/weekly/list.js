@@ -1,76 +1,91 @@
-// --- Element Selections ---
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-const weekListSection =
-    document.getElementById("week-list-section");
+    <meta charset="UTF-8">
 
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-// --- Functions ---
+    <title>Week Details</title>
 
-function createWeekArticle(week) {
+    <link rel="stylesheet" href="../styles/main.css">
 
-    const article = document.createElement("article");
+    <script src="details.js" defer></script>
 
-    const title = document.createElement("h2");
-    title.textContent = week.title;
+</head>
+<body>
 
-    const startDate = document.createElement("p");
-    startDate.textContent =
-        `Starts on: ${week.start_date}`;
+    <header>
 
-    const description = document.createElement("p");
-    description.textContent = week.description;
+        <h1 id="week-title"></h1>
 
-    const link = document.createElement("a");
+    </header>
 
-    link.href = `details.html?id=${week.id}`;
+    <main>
 
-    link.textContent =
-        "View Details & Discussion";
+        <!-- ========================================================= -->
+        <!-- Section 1: Weekly Information -->
+        <!-- ========================================================= -->
 
-    article.appendChild(title);
+        <article>
 
-    article.appendChild(startDate);
+            <p id="week-start-date"></p>
 
-    article.appendChild(description);
+            <h2>Description & Notes</h2>
 
-    article.appendChild(link);
+            <p id="week-description"></p>
 
-    return article;
-}
+            <h2>Exercises & Resources</h2>
 
+            <ul id="week-links-list"></ul>
 
-async function loadWeeks() {
-
-    try {
-
-        const response =
-            await fetch("./api/index.php");
-
-        const result = await response.json();
-
-        weekListSection.innerHTML = "";
-
-        result.data.forEach((week) => {
-
-            const article =
-                createWeekArticle(week);
-
-            weekListSection.appendChild(article);
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Error loading weeks:",
-            error
-        );
-
-        weekListSection.innerHTML =
-            "<p>Failed to load weeks.</p>";
-    }
-}
+        </article>
 
 
-// --- Initial Page Load ---
+        <!-- ========================================================= -->
+        <!-- Section 2: Discussion Forum -->
+        <!-- ========================================================= -->
 
-loadWeeks();
+        <section id="discussion-forum">
+
+            <h2>Discussion</h2>
+
+            <!-- Existing Comments -->
+
+            <div id="comment-list">
+
+                <!-- details.js injects comments here -->
+
+            </div>
+
+
+            <!-- Add Comment Form -->
+
+            <form id="comment-form" action="#">
+
+                <fieldset>
+
+                    <legend>Leave a Comment</legend>
+
+                    <label for="new-comment">
+                        Your Comment
+                    </label>
+
+                    <textarea id="new-comment"
+                              required></textarea>
+
+                    <button type="submit">
+                        Post Comment
+                    </button>
+
+                </fieldset>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
