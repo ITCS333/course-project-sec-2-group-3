@@ -1,1 +1,107 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f6f8;
+    }
+
+    nav {
+      background: #2c3e50;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .hero button {
+      padding: 12px 25px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .hero button:hover {
+      background: #1a242f;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #2c3e50;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <nav>
+    <div><strong>My App</strong></div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="src/admin/manage_users.html">Admin</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>Welcome to the System</h1>
+    <p>Manage users easily with our admin dashboard</p>
+    <button onclick="location.href='login.html'">Get Started</button>
+  </div>
+
+  <footer>
+    © 2026 My App
+  </footer>
+
+</body>
+</html>
