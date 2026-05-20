@@ -130,6 +130,9 @@ function handleChangePassword(event) {
     alert("Password must be at least 8 characters.");
     return;
   }
+  document.getElementById("current-password").value = "";
+document.getElementById("new-password").value = "";
+document.getElementById("confirm-password").value = ""; 
 
   const id = 1;
 
@@ -148,9 +151,7 @@ function handleChangePassword(event) {
       }
 
       alert("Password updated successfully!");
-document.getElementById("current-password").value = "";
-document.getElementById("new-password").value = "";
-document.getElementById("confirm-password").value = "";    })
+   })
     .catch((error) => {
       alert(error.message);
     });
