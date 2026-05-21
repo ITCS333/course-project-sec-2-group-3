@@ -218,3 +218,7 @@ async function loadAndInitialize() {
 
 loadAndInitialize();
 
+if (typeof module !== 'undefined') {
+    module.exports = { createResourceRow, renderTable, handleAddResource, handleTableClick, loadAndInitialize };
+}
+
