@@ -63,12 +63,11 @@ function createResourceRow(resource) {
  * Render the entire table
  */
 function renderTable() {
-    // Clear the table body
-    resourcesTbody.innerHTML = '';
-    
-    // Loop through resources and append rows
+    const tbody = document.getElementById('resources-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
     resources.forEach(resource => {
-        resourcesTbody.appendChild(createResourceRow(resource));
+        tbody.appendChild(createResourceRow(resource));
     });
 }
 
