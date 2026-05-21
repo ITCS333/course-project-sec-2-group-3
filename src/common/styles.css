@@ -1,1 +1,245 @@
 /* CSS Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f7eeee;
+}
+
+header {
+    background-color: #9e5c6a;
+    color: #fdf5f6;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    border-radius: 6px;
+}
+
+h1, h2 {
+    margin: 0 0 15px 0;
+    color: #5c2d38;
+}
+
+h3 {
+    color: #5c2d38;
+}
+
+header h1 {
+    color: #fdf5f6;
+}
+
+main {
+    max-width: 900px;
+    margin: auto;
+}
+
+/* ---- Sections & Articles ---- */
+
+section {
+    background: #fffafa;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 6px;
+    box-shadow: 0px 2px 5px rgba(158, 92, 106, 0.12);
+}
+
+article {
+    background: #fdf0f2;
+    border-left: 4px solid #9e5c6a;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
+
+/* ---- Forms ---- */
+
+fieldset {
+    border: 1px solid #e0b4bc;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+legend {
+    font-weight: bold;
+    color: #9e5c6a;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+    color: #5c2d38;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #d4a0aa;
+    box-sizing: border-box;
+    background-color: #fdf0f2;
+    color: #5c2d38;
+    font-weight: 500;
+}
+
+textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #9e5c6a;
+    color: #fdf5f6;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #7d4455;
+}
+
+/* ---- Table ---- */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border-bottom: 1px solid #ecc8ce;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #9e5c6a;
+    color: #fdf5f6;
+}
+
+td {
+    color: #5c2d38;
+    font-weight: 500;
+}
+
+td button {
+    margin-top: 0;
+    margin-right: 8px;
+    background-color: #c47d8a;
+}
+
+td button:hover {
+    background-color: #9e5c6a;
+}
+
+td button:last-child {
+    background-color: #b04455;
+}
+
+td button:last-child:hover {
+    background-color: #8c2d3e;
+}
+
+/* ---- Details / Summary (Admin Portal) ---- */
+
+details {
+    margin-bottom: 15px;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #9e5c6a;
+    padding: 8px 0;
+}
+
+/* ---- Text & Lists ---- */
+
+p {
+    color: #5c2d38;
+    font-weight: 500;
+}
+
+ul {
+    color: #5c2d38;
+}
+
+ul a {
+    color: #9e5c6a;
+}
+
+ul a:hover {
+    color: #5c2d38;
+}
+
+/* ---- Assignment article links (list.html) ---- */
+
+article a {
+    color: #9e5c6a;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+article a:hover {
+    color: #5c2d38;
+    text-decoration: underline;
+}
+
+article p {
+    color: #5c2d38;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+}
+
+/* ---- Comment list (details.html) ---- */
+
+#comment-list article {
+    background: #fdf0f2;
+    border-left: 4px solid #9e5c6a;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+#comment-list article footer {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #9e5c6a;
+    font-weight: 600;
+}
+
+/* ---- Login page centering (login.html) ---- */
+
+body.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+nav {
+    margin-top: 8px;
+}
+
+nav a {
+    color: #fdf5f6;
+    margin-right: 15px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
