@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 
 // TODO: Include the database connection file.
-require_once "/../../common/db.php";
+require_once "db.php";
 
 // Assume a function getDBConnection() is available that returns a PDO instance
 // configured for the 'course' database (see schema.sql).
