@@ -193,29 +193,29 @@ async function handleTableClick(event) {
     }
 }
 
-/**
- * Load resources and initialize
- */
+
 async function loadAndInitialize() {
     try {
-        // Fetch all resources
         const response = await fetch('./api/index.php');
         const result = await response.json();
-        
+
         if (result.success && result.data) {
-            // Store in global variable
             resources = result.data;
-            // Render table
             renderTable();
         }
     } catch (error) {
         console.error('Error loading resources:', error);
     }
+
+    if (resourceForm) {
+        resourceForm.removeEventListener('submit', handleAddResource);
+        resourceForm.addEventListener('submit', handleAddResource);
+    }
+    if (resourcesTbody) {
+        resourcesTbody.removeEventListener('click', handleTableClick);
+        resourcesTbody.addEventListener('click', handleTableClick);
+    }
 }
 
-// Add event listeners
-resourceForm.addEventListener('submit', handleAddResource);
-resourcesTbody.addEventListener('click', handleTableClick);
-
-// Initialize page
 loadAndInitialize();
+
