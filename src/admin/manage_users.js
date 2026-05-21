@@ -131,6 +131,9 @@ function handleChangePassword(event) {
     return;
   }
 
+  document.getElementById("current-password").value = "";
+document.getElementById("new-password").value = "";
+document.getElementById("confirm-password").value = ""; 
   const id = 1;
 
   fetch("api/index.php?action=change_password", {
@@ -148,9 +151,6 @@ function handleChangePassword(event) {
       }
 
       alert("Password updated successfully!");
-  document.getElementById("current-password").value = "";
-document.getElementById("new-password").value = "";
-document.getElementById("confirm-password").value = ""; 
    })
     .catch((error) => {
       alert(error.message);
