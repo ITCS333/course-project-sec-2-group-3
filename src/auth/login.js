@@ -106,7 +106,7 @@ function handleLogin(event) {
     return;
   }
  if (typeof fetch !== "undefined") {
-  fetch("api/login", {
+  fetch("./api/index.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -122,9 +122,9 @@ function handleLogin(event) {
       displayMessage("Login successful!", "success");
 
       if (Number(data.user?.is_admin) === 1) {
-        window.location.href = "/src/admin/manage_users.html";
+        window.location.href = "../admin/manage_users.html";
       } else {
-        window.location.href = "/index.html";
+        window.location.href = "../../index.html";
       }
     } else {
       displayMessage(data.message, "error");

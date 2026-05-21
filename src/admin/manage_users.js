@@ -7,7 +7,7 @@
   2. Implement the JavaScript functionality as described in the TODO comments.
   3. All data is fetched from and written to the PHP API at '../api/index.php'.
      The local 'users' array is used only as a client-side cache for search and sort.
-*/
+ */
 
 // --- Global Data Store ---
 // This array will be populated with data fetched from the PHP API.
@@ -130,13 +130,13 @@ function handleChangePassword(event) {
     alert("Password must be at least 8 characters.");
     return;
   }
+
   document.getElementById("current-password").value = "";
 document.getElementById("new-password").value = "";
 document.getElementById("confirm-password").value = ""; 
-
   const id = 1;
 
-  fetch("../api/index.php?action=change_password", {
+  fetch("api/index.php?action=change_password", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -156,8 +156,8 @@ document.getElementById("confirm-password").value = "";
       alert(error.message);
     });
 }
-
-
+//
+//
 /**
  * TODO: Implement the handleAddUser function.
  * This function is called when the "Add User" form is submitted.
@@ -192,8 +192,8 @@ function handleAddUser(event) {
     alert("Password must be at least 8 characters.");
     return;
   }
-
-  fetch("../api/index.php", {
+  
+  fetch("api/index.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -238,7 +238,7 @@ const target = event.target;
   if (target.classList.contains("delete-btn")) {
     const id = target.dataset.id;
 
-    fetch(`../api/index.php?id=${id}`, {
+    fetch(`api/index.php?id=${id}`, {
       method: "DELETE"
     })
       .then(response =>
@@ -343,7 +343,7 @@ renderTable(users);
 async function loadUsersAndInitialize() {
   // ... your implementation here ...
   try {
-    const response = await fetch("../api/index.php");
+    const response = await fetch("api/index.php");
 
     if (!response.ok) {
       throw new Error("Error loading users");
