@@ -62,10 +62,11 @@ function createResourceRow(resource) {
 /**
  * Render the entire table
  */
-function renderTable() {
-    const tbody = document.getElementById('resources-tbody');
+function renderTable(data) {
+    if (data) resources = data;
+    const tbody = document.querySelector("#resources-tbody");
     if (!tbody) return;
-    tbody.innerHTML = '';
+    tbody.innerHTML = "";
     resources.forEach(resource => {
         tbody.appendChild(createResourceRow(resource));
     });
@@ -195,30 +196,19 @@ async function handleTableClick(event) {
 
 async function loadAndInitialize() {
     try {
-        const response = await fetch('./api/index.php');
-        const result = await response.json();
-
-        if (result.success && result.data) {
-            resources = result.data;
-            renderTable();
-        }
+        const response = await fetch("api/index.php");
+        const data = await response.json();
+        resources = data.data;
+        renderTable();
     } catch (error) {
-        console.error('Error loading resources:', error);
+        console.error("Error loading resources:", error);
     }
 
-    if (resourceForm) {
-        resourceForm.removeEventListener('submit', handleAddResource);
-        resourceForm.addEventListener('submit', handleAddResource);
-    }
-    if (resourcesTbody) {
-        resourcesTbody.removeEventListener('click', handleTableClick);
-        resourcesTbody.addEventListener('click', handleTableClick);
+    if (!loadAndInitialize._listenersAttached) {
+        resourceForm.addEventListener("submit", handleAddResource);
+        resourcesTableBody.addEventListener("click", handleTableClick);
+        loadAndInitialize._listenersAttached = true;
     }
 }
-
 loadAndInitialize();
-
-if (typeof module !== 'undefined') {
-    module.exports = { createResourceRow, renderTable, handleAddResource, handleTableClick, loadAndInitialize };
-}
 
