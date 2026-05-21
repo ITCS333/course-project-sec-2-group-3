@@ -156,7 +156,7 @@ document.getElementById("confirm-password").value = "";
       alert(error.message);
     });
 }
-
+//
 //
 /**
  * TODO: Implement the handleAddUser function.
