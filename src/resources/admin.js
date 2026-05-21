@@ -196,7 +196,7 @@ async function handleTableClick(event) {
 
 async function loadAndInitialize() {
     try {
-        const response = await fetch("api/index.php");
+        const response = await fetch('./api/index.php');
         const data = await response.json();
         resources = data.data;
         renderTable();
@@ -205,10 +205,12 @@ async function loadAndInitialize() {
     }
 
     if (!loadAndInitialize._listenersAttached) {
-        resourceForm.addEventListener("submit", handleAddResource);
-        resourcesTableBody.addEventListener("click", handleTableClick);
-        loadAndInitialize._listenersAttached = true;
-    }
+    const form = document.getElementById('resource-form');
+    const tbody = document.getElementById('resources-tbody');
+    if (form) form.addEventListener('submit', handleAddResource);
+    if (tbody) tbody.addEventListener('click', handleTableClick);
+    loadAndInitialize._listenersAttached = true;
+}
 }
 loadAndInitialize();
 
