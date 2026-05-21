@@ -85,7 +85,7 @@ if($_SERVER['REQUEST_METHOD']==='OPTIONS'){
 
 // TODO: Include the shared database connection file.
 // require_once __DIR__ . '/../../common/db.php';
-require_once "db.php";
+require_once __DIR__ . '/../../common/db.php';
 
 // TODO: Get the PDO database connection.
 // $db = getDBConnection();
