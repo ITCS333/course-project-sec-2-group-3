@@ -172,4 +172,3 @@ async function initializePage() {
 
 // Initialize page
 initializePage();
-initializePage();

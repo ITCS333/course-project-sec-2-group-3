@@ -62,5 +62,3 @@ async function loadResources() {
 
 // Load resources
 loadResources();
-// Call the function to populate the page.
-loadResources();

@@ -81,8 +81,8 @@ function resetForm() {
     document.getElementById('resource-link').value = '';
     editMode = false;
     editId = null;
-    formHeading.textContent = 'Add a New Resource';
-    addResourceBtn.textContent = 'Add Resource';
+    if (formHeading) formHeading.textContent = 'Add a New Resource';
+    if (addResourceBtn) addResourceBtn.textContent = 'Add Resource';
 }
 
 /**
@@ -180,8 +180,9 @@ async function handleTableClick(event) {
             editId = id;
             
             // Change button text
-            formHeading.textContent = 'Edit Resource';
-            addResourceBtn.textContent = 'Update Resource';
+            if (formHeading) formHeading.textContent = 'Edit Resource';
+            if (addResourceBtn) addResourceBtn.textContent = 'Update Resource';
+
             
             // Scroll to form
             document.getElementById('resource-form').scrollIntoView({ behavior: 'smooth' });
@@ -214,5 +215,4 @@ resourceForm.addEventListener('submit', handleAddResource);
 resourcesTbody.addEventListener('click', handleTableClick);
 
 // Initialize page
-loadAndInitialize();
 loadAndInitialize();
