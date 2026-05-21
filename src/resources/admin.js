@@ -185,7 +185,10 @@ async function handleTableClick(event) {
 
             
             // Scroll to form
-            document.getElementById('resource-form').scrollIntoView({ behavior: 'smooth' });
+            const form = document.getElementById('resource-form');
+            if (form && typeof form.scrollIntoView === 'function') {
+            form.scrollIntoView({ behavior: 'smooth' });
+}
         }
     }
 }
