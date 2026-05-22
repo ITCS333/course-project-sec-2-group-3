@@ -124,7 +124,7 @@ function handleLogin(event) {
       if (Number(data.user?.is_admin) === 1) {
         window.location.href = "../admin/manage_users.html";
       } else {
-        window.location.href = "../index.html";
+        window.location.href = "../../index.html";
       }
     } else {
       displayMessage(data.message, "error");
