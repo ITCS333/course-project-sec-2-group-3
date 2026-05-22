@@ -18,7 +18,7 @@
     }
 
     nav {
-      background: #fffafa;
+      background: #5c2d38;
       color: white;
       padding: 15px 30px;
       display: flex;
@@ -66,7 +66,7 @@
     }
 
     .hero button:hover {
-      background: #5c2d38;
+      background: #7d4455;
     }
 
     footer {
@@ -95,8 +95,12 @@
 
   <div class="hero">
     <h1>Welcome to the System</h1>
-    <p>Manage users easily with our admin dashboard</p>
-    <button onclick="location.href='login.html'">Get Started</button>
+    <p>Select a section to get started</p>
+    <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center;">
+      <a href="src/assignments/list.html" style="padding:12px 25px; background:#5c2d38; color:white; text-decoration:none; border-radius:5px;">Assignments</a>
+      <a href="src/weekly/list.html" style="padding:12px 25px; background:#5c2d38; color:white; text-decoration:none; border-radius:5px;">Weekly Content</a>
+      <a href="src/resources/list.html" style="padding:12px 25px; background:#5c2d38; color:white; text-decoration:none; border-radius:5px;">Resources</a>
+    </div>
   </div>
 
   <footer>
