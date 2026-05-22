@@ -2,9 +2,9 @@
 
 function getDBConnection() {
     $host = "localhost";
-    $dbname = "users_db";
-    $username = "root";
-    $password = "";
+    $dbname = "course";
+    $username = "admin";
+    $password = "password123";
 
     $db = new PDO(
         "mysql:host=$host;dbname=$dbname;charset=utf8",
