@@ -182,39 +182,65 @@ function handleAddUser(event) {
   const email = document.getElementById("user-email").value;
   const password = document.getElementById("default-password").value;
   const is_admin = parseInt(document.getElementById("is-admin").value);
+  const submitBtn = document.getElementById("add");
+  const editId = submitBtn.dataset.editId;
 
-  if (!name || !email || !password) {
-    alert("Please fill out all required fields.");
-    return;
-  }
-
-  if (password.length < 8) {
-    alert("Password must be at least 8 characters.");
-    return;
-  }
-  
-  fetch("api/index.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name, email, password, is_admin })
-  })
+  if (editId) {
+    fetch("api/index.php", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: parseInt(editId), name, email, is_admin })
+    })
     .then(response => response.json().then(data => {
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to add user");
-      }
-
+      if (!response.ok) throw new Error(data.message || "Failed to update user");
       return data;
     }))
     .then(() => {
       loadUsersAndInitialize();
       addUserForm.reset();
+      submitBtn.textContent = "Add User";
+      delete submitBtn.dataset.editId;
+      const pwdField = document.getElementById("default-password");
+      pwdField.setAttribute("required", "");
+      pwdField.setAttribute("minlength", "8");
+      pwdField.placeholder = "";
     })
-    .catch(error => {
-      alert(error.message);
-    });
-}
+    .catch(error => { alert(error.message); });
+    return;
+  }
+
+    if (!name || !email || !password) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters.");
+      return;
+    }
+    
+    fetch("api/index.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name, email, password, is_admin })
+    })
+      .then(response => response.json().then(data => {
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to add user");
+        }
+
+        return data;
+      }))
+      .then(() => {
+        loadUsersAndInitialize();
+        addUserForm.reset();
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+  }
 
 /**
  * TODO: Implement the handleTableClick function.
@@ -256,7 +282,30 @@ const target = event.target;
       .catch(error => {
         alert(error.message);
       });
+      
   }
+  if (target.classList.contains("edit-btn")) {
+        const id = parseInt(target.dataset.id);
+        const user = users.find(u => u.id === id);
+        if (!user) return;
+
+        document.getElementById("user-name").value = user.name;
+        document.getElementById("user-email").value = user.email;
+        document.getElementById("is-admin").value = user.is_admin;
+
+        const pwdField = document.getElementById("default-password");
+        pwdField.value = "";
+        pwdField.removeAttribute("required");
+        pwdField.removeAttribute("minlength");
+        pwdField.placeholder = "Leave blank to keep password unchanged";
+
+        const submitBtn = document.getElementById("add");
+        submitBtn.textContent = "Update User";
+        submitBtn.dataset.editId = id;
+
+        document.querySelector("details").open = true;
+        document.getElementById("user-name").scrollIntoView({ behavior: "smooth" });
+     }
 }
 
 
