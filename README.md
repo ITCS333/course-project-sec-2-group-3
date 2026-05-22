@@ -13,7 +13,7 @@ The website covers five functional areas, each assigned to one team member.
 
 ## Live Demo
 
-> **Replit Deployment:** Update this link with your Replit deployment URL once the project is live.
+> **Replit Deployment:** https://0d665427-5c26-4956-98a6-3836f437b5a7-00-1x8wd0vm47pd2.sisko.replit.dev/src/auth/login.html
 
 ---
 
